@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>seeq.addons.mps._mps &mdash; seeq-mps 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/seeq-favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> seeq-mps
+            <img src="../../../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docstrings.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">seeq-mps</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>seeq.addons.mps._mps</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for seeq.addons.mps._mps</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">seeq</span> <span class="kn">import</span> <span class="n">spy</span>
+
+<span class="kn">import</span> <span class="nn">mass_ts</span> <span class="k">as</span> <span class="nn">mts</span>
+<span class="kn">from</span> <span class="nn">dtaidistance</span> <span class="kn">import</span> <span class="n">dtw</span>
+
+
+<div class="viewcode-block" id="gather_workbook_worksheet_meta_data"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.gather_workbook_worksheet_meta_data">[docs]</a><span class="k">def</span> <span class="nf">gather_workbook_worksheet_meta_data</span><span class="p">(</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function gathers workbook object data and worksheet index</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    workbook_id : str</span>
+<span class="sd">        The Seeq ID of the source workbook</span>
+<span class="sd">    worksheet_id: str</span>
+<span class="sd">        The Seeq ID of the source worksheet</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    desired_workbook: list of seeq.spy.workbooks._workbook objects</span>
+<span class="sd">        and seeq spy workbook meta data</span>
+<span class="sd">    sheet_index: int</span>
+<span class="sd">        integer detailing the index of the source worksheet</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">wb_id</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">search</span><span class="p">({</span><span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="n">workbook_id</span><span class="p">},</span>
+                                 <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                 <span class="p">)</span>
+
+    <span class="n">desired_workbook</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">wb_id</span><span class="p">,</span>
+                                          <span class="n">include_referenced_workbooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                          <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                          <span class="p">)</span>
+
+    <span class="c1"># find worksheet index</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sheet_list</span> <span class="o">=</span> <span class="n">desired_workbook</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">worksheets</span>
+        <span class="n">sheet_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sheet_list</span><span class="p">)</span> <span class="k">if</span> <span class="n">worksheet_id</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">desired_workbook</span><span class="p">,</span> <span class="n">sheet_index</span>
+
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR = Could not find worksheet: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">worksheet_id</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="save_ref"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.save_ref">[docs]</a><span class="k">def</span> <span class="nf">save_ref</span><span class="p">(</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">,</span> <span class="n">signal_pull_list</span><span class="p">,</span> <span class="n">known_cap</span><span class="p">,</span> <span class="n">time_frame</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">save_name</span><span class="p">,</span> <span class="n">mypath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function saves the reference profile time series data and metadata as a pickle file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    workbook_id : str</span>
+<span class="sd">        The Seeq ID of the source workbook</span>
+<span class="sd">    worksheet_id: str</span>
+<span class="sd">        The Seeq ID of the source worksheet</span>
+<span class="sd">    signal_pull_list: list of str</span>
+<span class="sd">        List of strings that detail the signal names to describe the reference profile to be saved</span>
+<span class="sd">    known_cap: str</span>
+<span class="sd">        Name (str) of the capsule that defines the reference/s to be saved</span>
+<span class="sd">    time_frame: list of datetime</span>
+<span class="sd">        Start and end datetimes of the analysis range to searched for the known capsule in the seeq.spy.pull</span>
+<span class="sd">    grid: str</span>
+<span class="sd">        resolution/griding of the seeq.spy.pull</span>
+<span class="sd">    save_name: str</span>
+<span class="sd">        name of the pickle file to saved as</span>
+<span class="sd">    mypath</span>
+<span class="sd">        path to folder to save the pickle file in</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">desired_workbook</span><span class="p">,</span> <span class="n">sheet_index</span> <span class="o">=</span> <span class="n">gather_workbook_worksheet_meta_data</span><span class="p">(</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">)</span>
+
+    <span class="c1"># define signals to be searched and pulled</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="n">desired_workbook</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="n">sheet_index</span><span class="p">]</span><span class="o">.</span><span class="n">display_items</span>
+    <span class="n">items_s</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">items</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;Signal&#39;</span><span class="p">]</span>
+    <span class="n">items_s</span> <span class="o">=</span> <span class="n">items_s</span><span class="p">[</span><span class="n">items_s</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">signal_pull_list</span><span class="p">)]</span>
+
+    <span class="c1"># define &#39;known&#39; condition to be pulled for all signals</span>
+    <span class="n">items_c</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">items</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;Condition&#39;</span><span class="p">]</span>
+    <span class="n">items_c</span> <span class="o">=</span> <span class="n">items_c</span><span class="p">[</span><span class="n">items_c</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="n">known_cap</span><span class="p">]</span>
+    <span class="n">data_pull_known</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">items_c</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">time_frame</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">time_frame</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+
+    <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">mypath</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">save_name</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_</span><span class="p">:</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">items_s</span><span class="p">,</span> <span class="n">file_</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data_pull_known</span><span class="p">,</span> <span class="n">file_</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_ref"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.load_ref">[docs]</a><span class="k">def</span> <span class="nf">load_ref</span><span class="p">(</span><span class="n">load_name</span><span class="p">,</span> <span class="n">mypath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function loads the reference profile time series data and metadata from a previously saved pickle file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    load_name: str</span>
+<span class="sd">        Name of the pickle file to load.</span>
+<span class="sd">    mypath: str</span>
+<span class="sd">        Path to folder containing the pickle file to load.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    items_s_ref: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of [&#39;Name&#39;, &#39;ID&#39;, &#39;Type&#39;, &#39;Color&#39;, &#39;Line Style&#39;, &#39;Line Width&#39;,</span>
+<span class="sd">        &#39;Lane&#39;, &#39;Samples Display&#39;, &#39;Axis Auto Scale&#39;, &#39;Axis Align&#39;, &#39;Axis Group&#39;, &#39;Axis Show&#39;] to detail the signals</span>
+<span class="sd">        that describe the known reference profile.</span>
+<span class="sd">    data_pull_known: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of</span>
+<span class="sd">        [&#39;Condition&#39;, &#39;Capsule Start&#39;,&#39;Capsule End&#39;,&#39;Capsule Is Uncertain&#39;]</span>
+<span class="sd">        to detail the capsule of the known reference profile capsule.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">mypath</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">load_name</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_</span><span class="p">:</span>
+        <span class="n">items_s_ref</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
+        <span class="n">data_pull_known</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">items_s_ref</span><span class="p">,</span> <span class="n">data_pull_known</span></div>
+
+
+<div class="viewcode-block" id="pull_ref_data"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.pull_ref_data">[docs]</a><span class="k">def</span> <span class="nf">pull_ref_data</span><span class="p">(</span><span class="n">items_s_ref</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function gathers the time series data of the reference. The reference conditions limits the timeframe of the</span>
+<span class="sd">    time series data to be gathered, a signal list instructs the variables to be gathered and the sampling rate or</span>
+<span class="sd">    griding is set.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    items_s_ref: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of</span>
+<span class="sd">        [&#39;Name&#39;, &#39;ID&#39;, &#39;Type&#39;, &#39;Color&#39;, &#39;Line Style&#39;, &#39;Line Width&#39;, &#39;Lane&#39;,</span>
+<span class="sd">        &#39;Samples Display&#39;, &#39;Axis Auto Scale&#39;, &#39;Axis Align&#39;, &#39;Axis Group&#39;,</span>
+<span class="sd">        &#39;Axis Show&#39;]. To detail the signals that describe the known reference profile.</span>
+<span class="sd">    data_pull_known: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of</span>
+<span class="sd">        [&#39;Condition&#39;, &#39;Capsule Start&#39;,&#39;Capsule End&#39;,&#39;Capsule Is Uncertain&#39;].</span>
+<span class="sd">        To detail the capsule of the known reference profile capsule.</span>
+<span class="sd">    grid: str</span>
+<span class="sd">        Resolution/griding of the spy pull.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data_pull_c: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the reference profile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">start_all</span> <span class="o">=</span> <span class="n">data_pull_known</span><span class="p">[</span><span class="s1">&#39;Capsule Start&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">end_all</span> <span class="o">=</span> <span class="n">data_pull_known</span><span class="p">[</span><span class="s1">&#39;Capsule End&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">data_pull_c</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">items_s_ref</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start_all</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end_all</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+    <span class="n">data_pull_c</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_pull_c</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">data_pull_c</span> <span class="o">=</span> <span class="n">data_pull_c</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">data_pull_c</span></div>
+
+
+<div class="viewcode-block" id="pull_mps_data"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.pull_mps_data">[docs]</a><span class="k">def</span> <span class="nf">pull_mps_data</span><span class="p">(</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">,</span> <span class="n">signal_pull_list</span><span class="p">,</span> <span class="n">items_s_ref</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">time_frame</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function gathers all the time series data required for the analysis, for the reference and the search area.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    workbook_id : str</span>
+<span class="sd">        The Seeq ID of the source workbook.</span>
+<span class="sd">    worksheet_id: str</span>
+<span class="sd">        The Seeq ID of the source worksheet.</span>
+<span class="sd">    signal_pull_list: list of str</span>
+<span class="sd">        List of strings that detail the signal names to describe the reference profile.</span>
+<span class="sd">    items_s_ref: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of [&#39;Name&#39;, &#39;ID&#39;, &#39;Type&#39;, &#39;Color&#39;, &#39;Line Style&#39;, &#39;Line Width&#39;,</span>
+<span class="sd">        &#39;Lane&#39;, &#39;Samples Display&#39;, &#39;Axis Auto Scale&#39;, &#39;Axis Align&#39;, &#39;Axis Group&#39;, &#39;Axis Show&#39;]. To detail the signals</span>
+<span class="sd">        that describe the reference profile.</span>
+<span class="sd">    data_pull_known: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of</span>
+<span class="sd">        [&#39;Condition&#39;, &#39;Capsule Start&#39;,&#39;Capsule End&#39;,&#39;Capsule Is Uncertain&#39;].</span>
+<span class="sd">        to detail the capsule of the known reference profile capsule.</span>
+<span class="sd">    time_frame: list of datetime</span>
+<span class="sd">        Start and end of the analysis range to search for the known capsule in the spy pull.</span>
+<span class="sd">    grid: str</span>
+<span class="sd">        Details the resolution/griding of the spy pull</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data_pull: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the analysis/search area.</span>
+<span class="sd">    data_pull_c: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the reference profile.</span>
+<span class="sd">    sheet_index: int</span>
+<span class="sd">        Integer detailing the index of the source worksheet.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">desired_workbook</span><span class="p">,</span> <span class="n">sheet_index</span> <span class="o">=</span> <span class="n">gather_workbook_worksheet_meta_data</span><span class="p">(</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">)</span>
+
+    <span class="c1"># define signals to be searched and pull in 1min grid</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="n">desired_workbook</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="n">sheet_index</span><span class="p">]</span><span class="o">.</span><span class="n">display_items</span>
+    <span class="n">items_s</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">items</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;Signal&#39;</span><span class="p">]</span>
+    <span class="n">items_s</span> <span class="o">=</span> <span class="n">items_s</span><span class="p">[</span><span class="n">items_s</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">signal_pull_list</span><span class="p">)]</span>
+
+    <span class="n">data_pull</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">items_s</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">time_frame</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">time_frame</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+
+    <span class="n">data_pull</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">data_pull</span> <span class="o">=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="n">data_pull_c</span> <span class="o">=</span> <span class="n">pull_ref_data</span><span class="p">(</span><span class="n">items_s_ref</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">grid</span><span class="p">)</span>
+
+    <span class="c1"># return signal data, known capsule start and send time, length of known window</span>
+    <span class="k">return</span> <span class="n">data_pull</span><span class="p">,</span> <span class="n">data_pull_c</span><span class="p">,</span> <span class="n">sheet_index</span></div>
+
+
+<div class="viewcode-block" id="sort_and_prepare_results"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.sort_and_prepare_results">[docs]</a><span class="k">def</span> <span class="nf">sort_and_prepare_results</span><span class="p">(</span><span class="n">data_pull</span><span class="p">,</span> <span class="n">total_dist</span><span class="p">,</span> <span class="n">window_step</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">known</span><span class="p">,</span> <span class="n">sim_</span><span class="p">,</span> <span class="n">max_</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function takes the distance measurements from all variables at each window step, orders them numerically,</span>
+<span class="sd">    computes a % similarity score by comparing against the minimum possible distance (zero) and the maximum distance</span>
+<span class="sd">    (largest of the inverse of its self or maximum found distance) and removes overlapping &#39;found&#39; capsules/events from</span>
+<span class="sd">    most similar to least similar.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_pull: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;]. This dataframe has all the time series data for the analysis/search area.</span>
+<span class="sd">    total_dist: list of float</span>
+<span class="sd">        List of distance measurements between the two curves.</span>
+<span class="sd">    window_step: int</span>
+<span class="sd">        ize of the window stepping used by the algo.</span>
+<span class="sd">    known: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has strictly only the time series data for the reference profile start and end.</span>
+<span class="sd">    sim_: bool</span>
+<span class="sd">        Set to return similar or dis-similar results.</span>
+<span class="sd">    threshold: float</span>
+<span class="sd">        0 to 1 float to set similarity cutoff for found capsules.</span>
+<span class="sd">    max_: float</span>
+<span class="sd">        Max accumulative distance used to scale all other distances measured.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    found_list: list of int</span>
+<span class="sd">        Each int in the list is the sorted (highest similarity match 1st) index of each found capsule</span>
+<span class="sd">        as an integer relative to data_pull.</span>
+<span class="sd">    found_sim: list of float</span>
+<span class="sd">        Corresponding similarity measurement (0 to 1) of found list with 100% being a perfect match.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># suppress warnings of &quot;A value is trying to be set on a copy of a slice from a DataFrame.&quot;</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">chained_assignment</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># default=&#39;warn&#39;</span>
+    <span class="n">found_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">found_sim</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># create dataframe of results to remove sort, remove out of threshold set and remove duplicates</span>
+    <span class="n">total_dist_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">total_dist</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">])</span>
+    <span class="c1"># adjust if window steps are used</span>
+    <span class="n">total_dist_df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">total_dist_df</span><span class="o">.</span><span class="n">index</span> <span class="o">*</span> <span class="n">window_step</span>
+    <span class="n">total_dist_df</span><span class="p">[</span><span class="s1">&#39;index_&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_dist_df</span><span class="o">.</span><span class="n">index</span>
+
+    <span class="c1"># short by lowest distance (best match) and get index of lowest to then be used to find datetime</span>
+    <span class="k">if</span> <span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">known_index</span> <span class="o">=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># remove known capsule</span>
+        <span class="n">total_dist_df</span> <span class="o">=</span> <span class="n">total_dist_df</span><span class="p">[(</span><span class="n">total_dist_df</span><span class="p">[</span><span class="s1">&#39;index_&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">known_index</span> <span class="o">+</span> <span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">|</span>
+                                      <span class="p">(</span><span class="n">total_dist_df</span><span class="p">[</span><span class="s1">&#39;index_&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">known_index</span> <span class="o">-</span> <span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">))</span>
+                                      <span class="p">]</span>
+
+    <span class="c1"># sort</span>
+    <span class="n">total_dist_df_sorted</span> <span class="o">=</span> <span class="n">total_dist_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;distance&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="n">sim_</span><span class="p">)</span>
+
+    <span class="c1"># min/max normalise</span>
+    <span class="n">min_</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="n">total_dist_df_sorted</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">max_</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">total_dist_df_sorted</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">max_</span> <span class="o">=</span> <span class="n">total_dist_df_sorted</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="n">total_dist_df_sorted</span><span class="o">.</span><span class="n">distance</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_dist_df_sorted</span><span class="o">.</span><span class="n">distance</span> <span class="o">-</span> <span class="n">min_</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">max_</span> <span class="o">-</span> <span class="n">min_</span><span class="p">)</span>
+    <span class="n">total_dist_df_sorted</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">total_dist_df_sorted</span><span class="o">.</span><span class="n">distance</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># remove out of threshold set</span>
+    <span class="k">if</span> <span class="n">threshold</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">total_dist_df_sorted_threshold_filtered</span> <span class="o">=</span> <span class="n">total_dist_df_sorted</span><span class="p">[</span><span class="n">total_dist_df_sorted</span><span class="o">.</span><span class="n">distance</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">threshold</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">total_dist_df_sorted_threshold_filtered</span> <span class="o">=</span> <span class="n">total_dist_df_sorted</span>
+
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">total_dist_df_sorted_threshold_filtered</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="k">if</span> <span class="n">e</span> <span class="o">&lt;</span> <span class="n">total_dist_df_sorted_threshold_filtered</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">total_dist_df_sorted_threshold_filtered</span><span class="o">.</span><span class="n">index_</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">e</span><span class="p">]</span>
+            <span class="n">sim_save</span> <span class="o">=</span> <span class="n">total_dist_df_sorted_threshold_filtered</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">e</span><span class="p">]</span>
+
+            <span class="n">min_window</span> <span class="o">=</span> <span class="n">item</span> <span class="o">-</span> <span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">max_window</span> <span class="o">=</span> <span class="n">item</span> <span class="o">+</span> <span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">total_dist_df_sorted_threshold_filtered</span> <span class="o">=</span> <span class="n">total_dist_df_sorted_threshold_filtered</span><span class="p">[</span>
+                <span class="p">(</span><span class="n">total_dist_df_sorted_threshold_filtered</span><span class="o">.</span><span class="n">index_</span> <span class="o">==</span> <span class="n">item</span><span class="p">)</span> <span class="o">|</span>
+                <span class="p">(</span><span class="n">total_dist_df_sorted_threshold_filtered</span><span class="o">.</span><span class="n">index_</span> <span class="o">&gt;</span> <span class="n">max_window</span><span class="p">)</span> <span class="o">|</span>
+                <span class="p">(</span><span class="n">total_dist_df_sorted_threshold_filtered</span><span class="o">.</span><span class="n">index_</span> <span class="o">&lt;</span> <span class="n">min_window</span><span class="p">)</span>
+                <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">known_index</span> <span class="o">=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="c1"># remove known capsule from found profiles and set as list to use for push capsules</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">known_index</span> <span class="o">-</span> <span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">item</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">known_index</span> <span class="o">+</span> <span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+                <span class="n">found_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="n">found_sim</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sim_save</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">found_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="n">found_sim</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sim_save</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">found_list</span><span class="p">,</span> <span class="n">found_sim</span></div>
+
+
+<div class="viewcode-block" id="known_select"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.known_select">[docs]</a><span class="k">def</span> <span class="nf">known_select</span><span class="p">(</span><span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">select_</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function uses the known start and end time of the reference capsule/s and extracts the time series data from</span>
+<span class="sd">    the entire time series data set within the investigation range of the worksheet.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_pull_c: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the reference profile.</span>
+<span class="sd">    data_pull_known: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the analysis/search area.</span>
+<span class="sd">    select_: str</span>
+<span class="sd">        Name of the selected reference capsule.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    known: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has strictly only the time series data for the reference profile start and end.</span>
+<span class="sd">    knownlength: int</span>
+<span class="sd">        Length of the known dataframe.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">known</span> <span class="o">=</span> <span class="n">data_pull_c</span><span class="p">[</span><span class="n">data_pull_c</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">data_pull_known</span><span class="p">[</span><span class="s1">&#39;Capsule Start&#39;</span><span class="p">][</span><span class="n">select_</span><span class="p">]]</span>
+        <span class="n">known</span> <span class="o">=</span> <span class="n">known</span><span class="p">[</span><span class="n">known</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">data_pull_known</span><span class="p">[</span><span class="s1">&#39;Capsule End&#39;</span><span class="p">][</span><span class="n">select_</span><span class="p">]]</span>
+        <span class="n">knownlength</span> <span class="o">=</span> <span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">temp_df</span> <span class="o">=</span> <span class="n">data_pull_known</span>
+        <span class="n">temp_df</span><span class="p">[</span><span class="s1">&#39;Capsule Start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">temp_df</span><span class="p">[</span><span class="s1">&#39;Capsule Start&#39;</span><span class="p">])</span>
+        <span class="n">temp_df</span><span class="p">[</span><span class="s1">&#39;Capsule End&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">temp_df</span><span class="p">[</span><span class="s1">&#39;Capsule End&#39;</span><span class="p">])</span>
+
+        <span class="n">known</span> <span class="o">=</span> <span class="n">data_pull_c</span><span class="p">[</span><span class="n">data_pull_c</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">temp_df</span><span class="p">[</span><span class="s1">&#39;Capsule Start&#39;</span><span class="p">][</span><span class="n">select_</span><span class="p">]]</span>
+        <span class="n">known</span> <span class="o">=</span> <span class="n">known</span><span class="p">[</span><span class="n">known</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">temp_df</span><span class="p">[</span><span class="s1">&#39;Capsule End&#39;</span><span class="p">][</span><span class="n">select_</span><span class="p">]]</span>
+        <span class="n">knownlength</span> <span class="o">=</span> <span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">known</span><span class="p">,</span> <span class="n">knownlength</span></div>
+
+
+<div class="viewcode-block" id="seeq_mps_mass"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.seeq_mps_mass">[docs]</a><span class="k">def</span> <span class="nf">seeq_mps_mass</span><span class="p">(</span><span class="n">data_pull</span><span class="p">,</span> <span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">normalise</span><span class="p">,</span> <span class="n">sim_</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function measures the euclidean distance between the reference and search space time series data over the same</span>
+<span class="sd">    duration (limited by the reference) using Mueen&#39;s Algorithm for Similarity Search [MASS]. The algorithm window steps</span>
+<span class="sd">    through the time series data calculating a distance for each time period. It loops through all the variables</span>
+<span class="sd">    in the dataset and sums the distances into an accumulative distance measurement for each time step. The function can</span>
+<span class="sd">    be instructed to normalise the data before measurement. The distance scores are then converted to % similarity</span>
+<span class="sd">    compared to minimum possible distance (zero) and the maximum distance (largest of the inverse of its self or maximum</span>
+<span class="sd">    found distance). Finally the % of each variable/signal contribution to the similarity measurement is calculated.</span>
+<span class="sd">    This function is intended to be applied to continuous process data.</span>
+
+<span class="sd">    Technical reference found @ https://www.cs.unm.edu/~mueen/FastestSimilaritySearch.html</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_pull: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the analysis/search area.</span>
+<span class="sd">    data_pull_c: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the reference profile.</span>
+<span class="sd">    data_pull_known: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of</span>
+<span class="sd">        [&#39;Condition&#39;, &#39;Capsule Start&#39;,&#39;Capsule End&#39;,&#39;Capsule Is Uncertain&#39;].</span>
+<span class="sd">        To detail the capsule of the known reference profile capsule.</span>
+<span class="sd">    threshold: float</span>
+<span class="sd">        0 to 1 float to set similarity cutoff for found capsules.</span>
+<span class="sd">    normalise: bool</span>
+<span class="sd">        Set normalisation of the input data to the algo.</span>
+<span class="sd">    sim_: bool</span>
+<span class="sd">        Set to return similar or dis-similar results.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    found_all_sorted: numpy.ndarray</span>
+<span class="sd">        numpy array of three columns</span>
+<span class="sd">        1st = found capsules similarity measurement (float 0 to 1)</span>
+<span class="sd">        2nd = integer index of each found capsule relative to data_pull</span>
+<span class="sd">        3rd = integer describing the duration/length of the found capsule (each integer is defined by griding in</span>
+<span class="sd">        &#39;pull_mps_data&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">found_list_overall</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">found_sim_overall</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">found_length_overall</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">found_cap_known</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">var_columns</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">var_1</span> <span class="ow">in</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">cap_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data_pull_known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">var_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">var_1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cap_</span><span class="p">))</span>
+
+    <span class="c1"># loop on the known capsules</span>
+    <span class="k">for</span> <span class="n">capsule_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data_pull_known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">max_</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">known</span><span class="p">,</span> <span class="n">knownlength</span> <span class="o">=</span> <span class="n">known_select</span><span class="p">(</span><span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">capsule_</span><span class="p">)</span>
+
+        <span class="c1"># no window step therefore = 1</span>
+        <span class="n">window_step</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">chosen_var_list</span> <span class="o">=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">qry</span> <span class="o">=</span> <span class="n">known</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+            <span class="c1"># capture max distance</span>
+            <span class="n">max_v</span> <span class="o">=</span> <span class="n">mts</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="n">qry</span><span class="p">,</span> <span class="n">qry</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">normalize_query</span><span class="o">=</span><span class="n">normalise</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_v</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                <span class="n">max_v</span> <span class="o">=</span> <span class="n">mts</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="n">qry</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">qry</span><span class="p">)),</span> <span class="n">normalize_query</span><span class="o">=</span><span class="n">normalise</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_v</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+                        <span class="n">max_v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">qry</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">max_v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">qry</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">qry</span><span class="p">))</span>
+
+            <span class="n">max_</span> <span class="o">+=</span> <span class="n">max_v</span>
+
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">data_pull</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+            <span class="n">new_dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">mts</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">qry</span><span class="p">,</span> <span class="n">normalize_query</span><span class="o">=</span><span class="n">normalise</span><span class="p">))</span>
+            <span class="c1"># size for addition</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="n">chosen_var_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">total_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">new_dist</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">capsule_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">meta_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new_dist</span><span class="p">))],</span> <span class="n">columns</span><span class="o">=</span><span class="n">var_columns</span><span class="p">)</span>
+            <span class="c1"># Totalise distances to find best multi variate match</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_dist</span> <span class="ow">and</span> <span class="kc">True</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">new_dist</span><span class="p">):</span>
+                <span class="n">total_dist</span> <span class="o">+=</span> <span class="n">new_dist</span>
+
+            <span class="n">meta_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">capsule_</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">new_dist</span><span class="p">)</span>
+
+            <span class="n">found_cap_known</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">capsule_</span><span class="p">)</span>
+
+        <span class="c1"># sort distances and prepare results to index to og data set</span>
+        <span class="n">found_list</span><span class="p">,</span> <span class="n">found_sim</span> <span class="o">=</span> <span class="n">sort_and_prepare_results</span><span class="p">(</span><span class="n">data_pull</span><span class="p">,</span> <span class="n">total_dist</span><span class="p">,</span> <span class="n">window_step</span><span class="p">,</span>
+                                                         <span class="n">threshold</span><span class="p">,</span> <span class="n">known</span><span class="p">,</span> <span class="n">sim_</span><span class="p">,</span> <span class="n">max_</span><span class="p">)</span>
+
+        <span class="n">found_length</span> <span class="o">=</span> <span class="p">[</span><span class="n">knownlength</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">found_list</span><span class="p">))]</span>
+        <span class="n">capsule_listgen</span> <span class="o">=</span> <span class="p">[</span><span class="n">capsule_</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">found_list</span><span class="p">))]</span>
+        <span class="n">found_list_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">found_list</span><span class="p">)</span>
+        <span class="n">found_sim_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">found_sim</span><span class="p">)</span>
+        <span class="n">found_length_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">found_length</span><span class="p">)</span>
+        <span class="n">found_cap_known</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">capsule_listgen</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="c1"># known add in to filter out</span>
+        <span class="n">found_list_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+        <span class="n">found_sim_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">1000</span><span class="p">])</span>
+        <span class="n">found_length_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">knownlength</span><span class="p">])</span>
+
+    <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">found_sim_overall</span><span class="p">,</span> <span class="n">found_list_overall</span><span class="p">,</span> <span class="n">found_length_overall</span><span class="p">,</span>
+                                  <span class="n">found_cap_known</span><span class="p">,</span> <span class="n">found_cap_known</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">)</span>
+    <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="k">if</span> <span class="n">e</span> <span class="o">&lt;</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">e</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">e</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">min_window</span> <span class="o">=</span> <span class="n">item</span> <span class="o">-</span> <span class="n">shape</span>
+            <span class="n">max_window</span> <span class="o">=</span> <span class="n">item</span> <span class="o">+</span> <span class="n">shape</span>
+
+            <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="p">[</span>
+                <span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">item</span><span class="p">)</span> <span class="o">|</span>
+                <span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_window</span><span class="p">)</span> <span class="o">|</span>
+                <span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_window</span><span class="p">)</span>
+                <span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="p">[</span><span class="n">found_all_sorted</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1000</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">found_all_sorted</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="o">.</span><span class="n">columns</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">loc_c</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">loc_i</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">meta_data</span><span class="p">[</span><span class="n">loc_c</span><span class="p">][</span><span class="n">loc_i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">99999999999999999</span><span class="p">:</span>
+                <span class="n">found_all_sorted</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="n">loc_c</span><span class="p">][</span><span class="n">loc_i</span><span class="p">]</span>
+
+    <span class="n">found_all_sorted</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">found_all_sorted</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:]</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">found_all_sorted</span></div>
+
+
+<div class="viewcode-block" id="seeq_mps_dtw"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.seeq_mps_dtw">[docs]</a><span class="k">def</span> <span class="nf">seeq_mps_dtw</span><span class="p">(</span><span class="n">data_pull</span><span class="p">,</span> <span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">normalise</span><span class="p">,</span> <span class="n">sim_</span><span class="p">,</span> <span class="n">time_distort</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function measures the distance between the reference and search space time series data over one or many window</span>
+<span class="sd">    size/durations. This is achieved by utilising the dynamic time warping algorithm, which searches for the smallest</span>
+<span class="sd">    distance from each data point to a corresponding reference data point within an assigned search window. This</span>
+<span class="sd">    function window steps through the search area calculating a distance for each time period. It loops through all the</span>
+<span class="sd">    variables in the dataset and sums the distances into an accumulative distance measurement for each step. The</span>
+<span class="sd">    function can be instructed to normalise the data before measurement. Then the distance scores are converted to %</span>
+<span class="sd">    similarity compared to minimum possible distance (zero) and the maximum distance (largest of the inverse of its self</span>
+<span class="sd">    or maximum found distance). Finally the % of each variable/signal contribution to the similarity measurement is</span>
+<span class="sd">    calculated. This function is intended to be applied to continuous process data. Technical reference</span>
+<span class="sd">    https://www.cs.unm.edu/~mueen/DTW.pdf</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_pull: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the analysis/search area.</span>
+<span class="sd">    data_pull_c: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the reference profile.</span>
+<span class="sd">    data_pull_known: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of</span>
+<span class="sd">        [&#39;Condition&#39;, &#39;Capsule Start&#39;,&#39;Capsule End&#39;,&#39;Capsule Is Uncertain&#39;].</span>
+<span class="sd">        To detail the capsule of the known reference profile capsule.</span>
+<span class="sd">    threshold: float</span>
+<span class="sd">        0 to 1 float to set similarity cutoff for found capsules.</span>
+<span class="sd">    normalise: bool</span>
+<span class="sd">        Set normalisation of the input data to the algo.</span>
+<span class="sd">    sim_: bool</span>
+<span class="sd">        Set to return similar or dis-similar results.</span>
+<span class="sd">    time_distort: float</span>
+<span class="sd">        0 to 1 float to set % of time distortion of the searching window length in the window stepping of the algo.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    found_all_sorted: numpy.ndarray</span>
+<span class="sd">        numpy array of three columns</span>
+<span class="sd">        1st = found capsules similarity measurement (float 0 to 1)</span>
+<span class="sd">        2nd = integer index of each found capsule relative to data_pull</span>
+<span class="sd">        3rd = integer describing the duration/length of the found capsule (each integer is defined by griding in</span>
+<span class="sd">        &#39;pull_mps_data&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">time_distort</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_distort</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">found_list_overall</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">found_sim_overall</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">found_length_overall</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">found_cap_known</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">var_columns</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">found_time_dist_overall</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># loop on the known capsules</span>
+    <span class="k">for</span> <span class="n">capsule_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data_pull_known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">max_</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">known</span><span class="p">,</span> <span class="n">knownlength</span> <span class="o">=</span> <span class="n">known_select</span><span class="p">(</span><span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">capsule_</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">time_distort_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">time_distort</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">search_size_stretch</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">time_distort_</span> <span class="o">/</span> <span class="mi">100</span><span class="p">))</span>
+            <span class="c1"># size of steps taken during dtw distance measurement across the dataset</span>
+            <span class="n">window_step</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">known</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.05</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">window_step</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">window_step</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">chosen_var_list</span> <span class="o">=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">qry</span> <span class="o">=</span> <span class="n">known</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+                <span class="c1"># capture max distance</span>
+                <span class="c1"># normalise data</span>
+                <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+                    <span class="n">qry</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">zscore</span><span class="p">(</span><span class="n">qry</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="kc">True</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">qry</span><span class="p">):</span>
+                        <span class="n">qry</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">qry</span><span class="p">))</span>
+
+                <span class="n">max_</span> <span class="o">+=</span> <span class="n">dtw</span><span class="o">.</span><span class="n">distance_fast</span><span class="p">(</span><span class="n">qry</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">qry</span><span class="p">),</span> <span class="n">window</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)))</span>
+
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">data_pull</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="c1"># normalise data</span>
+                <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+                    <span class="n">qry</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">zscore</span><span class="p">(</span><span class="n">qry</span><span class="p">)</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">zscore</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="kc">True</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">qry</span><span class="p">):</span>
+                        <span class="n">qry</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">qry</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="kc">True</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+                        <span class="n">ts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ts</span><span class="p">))</span>
+                <span class="c1"># loop over window size of known length</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">window_step</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">-</span> <span class="n">search_size_stretch</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">temp_start</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">temp_start</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="n">search_size_stretch</span>
+                    <span class="n">target</span> <span class="o">=</span> <span class="n">ts</span><span class="p">[</span><span class="n">temp_start</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">search_size_stretch</span><span class="p">]</span>
+                    <span class="n">distance</span> <span class="o">=</span> <span class="n">dtw</span><span class="o">.</span><span class="n">distance_fast</span><span class="p">(</span><span class="n">qry</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)))</span>
+                    <span class="n">dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+
+                <span class="c1"># size for cost function addition from zero</span>
+                <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="n">chosen_var_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">total_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dist</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">capsule_</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">time_distort_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">meta_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dist</span><span class="p">))],</span> <span class="n">columns</span><span class="o">=</span><span class="n">var_columns</span><span class="p">)</span>
+
+                <span class="c1"># Totalise distances to find best multi variate match</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dist</span> <span class="ow">and</span> <span class="kc">True</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">dist</span><span class="p">):</span>
+                    <span class="n">total_dist</span> <span class="o">+=</span> <span class="n">dist</span>
+
+                <span class="n">meta_data</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">capsule_</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">time_distort_</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+
+            <span class="c1"># sort distances and prepare results to index to og data set</span>
+            <span class="n">found_list</span><span class="p">,</span> <span class="n">found_sim</span> <span class="o">=</span> <span class="n">sort_and_prepare_results</span><span class="p">(</span><span class="n">data_pull</span><span class="p">,</span> <span class="n">total_dist</span><span class="p">,</span> <span class="n">window_step</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span>
+                                                             <span class="n">known</span><span class="p">,</span> <span class="n">sim_</span><span class="p">,</span> <span class="n">max_</span><span class="p">)</span>
+            <span class="n">found_length</span> <span class="o">=</span> <span class="p">[</span><span class="n">knownlength</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">search_size_stretch</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">found_list</span><span class="p">))]</span>
+
+            <span class="n">found_list_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">found_list</span><span class="p">)</span>
+            <span class="n">found_sim_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">found_sim</span><span class="p">)</span>
+            <span class="n">found_length_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">found_length</span><span class="p">)</span>
+            <span class="n">time_distort_listgen</span> <span class="o">=</span> <span class="p">[</span><span class="n">time_distort_</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">found_list</span><span class="p">))]</span>
+            <span class="n">found_time_dist_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">time_distort_listgen</span><span class="p">)</span>
+            <span class="n">capsule_listgen</span> <span class="o">=</span> <span class="p">[</span><span class="n">capsule_</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">found_list</span><span class="p">))]</span>
+            <span class="n">found_cap_known</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">capsule_listgen</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="c1"># known add in to filter out</span>
+                <span class="n">found_list_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">known</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+                <span class="n">found_sim_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">1000</span><span class="p">])</span>
+                <span class="n">found_length_overall</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">knownlength</span><span class="p">])</span>
+
+    <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">found_sim_overall</span><span class="p">,</span> <span class="n">found_list_overall</span><span class="p">,</span> <span class="n">found_length_overall</span><span class="p">,</span>
+                                  <span class="n">found_cap_known</span><span class="p">,</span> <span class="n">found_time_dist_overall</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">)</span>
+    <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="k">if</span> <span class="n">e</span> <span class="o">&lt;</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">e</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># shape = found_all_sorted.iloc[e,2]</span>
+
+            <span class="n">min_window</span> <span class="o">=</span> <span class="n">item</span> <span class="o">-</span> <span class="n">knownlength</span>
+            <span class="n">max_window</span> <span class="o">=</span> <span class="n">item</span> <span class="o">+</span> <span class="n">knownlength</span>
+
+            <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="p">[</span>
+                <span class="p">(</span><span class="n">found_all_sorted</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">item</span><span class="p">)</span> <span class="o">|</span>
+                <span class="p">(</span><span class="n">found_all_sorted</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_window</span><span class="p">)</span> <span class="o">|</span>
+                <span class="p">(</span><span class="n">found_all_sorted</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_window</span><span class="p">)</span>
+                <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="p">[</span><span class="n">found_all_sorted</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1000</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">found_all_sorted</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="o">.</span><span class="n">columns</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">loc_c</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">loc_i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">found_all_sorted</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="n">loc_c</span><span class="p">][</span><span class="n">loc_i</span> <span class="o">/</span> <span class="n">window_step</span><span class="p">]</span>
+
+    <span class="n">found_all_sorted</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">found_all_sorted</span>
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:]</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">found_all_sorted</span></div>
+
+
+<div class="viewcode-block" id="seeq_mps_dtw_batch"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.seeq_mps_dtw_batch">[docs]</a><span class="k">def</span> <span class="nf">seeq_mps_dtw_batch</span><span class="p">(</span><span class="n">batch_cond</span><span class="p">,</span> <span class="n">data_pull</span><span class="p">,</span> <span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">normalise</span><span class="p">,</span> <span class="n">time_distort</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function is similar to the &quot;seeq_mps_dtw&quot; function but instead of window stepping through the entire search</span>
+<span class="sd">    area it only measures the distance between two time series datasets for each capsule in the batch condition. This</span>
+<span class="sd">    function is intended to be applied to batch process data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    batch_cond: pd.DataFrame, pd.Series</span>
+<span class="sd">        pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; conditions</span>
+<span class="sd">        requested to be analysed with index of (x, ..., Y) and columns of at least Capsule Start, Capsule End.</span>
+<span class="sd">        This dataframe has all the data for the batches capsules required.</span>
+<span class="sd">    data_pull: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the analysis/search area</span>
+<span class="sd">    data_pull_c: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the reference profile.</span>
+<span class="sd">    data_pull_known: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of</span>
+<span class="sd">        [&#39;Condition&#39;, &#39;Capsule Start&#39;,&#39;Capsule End&#39;,&#39;Capsule Is Uncertain&#39;].</span>
+<span class="sd">        To detail the capsule of the known reference profile capsule.</span>
+<span class="sd">    normalise: bool</span>
+<span class="sd">        Set normalisation of the input data to the algo.</span>
+<span class="sd">    time_distort: float</span>
+<span class="sd">        0 to 1 float to set % of time distortion of the searching window length in the window stepping of the algo.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    batch_sim_df: pd.DataFrame</span>
+<span class="sd">        A dataframe or series that minimally has columns of</span>
+<span class="sd">        [&#39;Similarity&#39;, &#39;Date-Time&#39;].</span>
+<span class="sd">        This has the resulting similarity measure of each defined capsule with the centered datetime</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">time_distort</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_distort</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">meta_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">batch_cond</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># loop on the known capsules</span>
+    <span class="k">for</span> <span class="n">capsule_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data_pull_known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">max_</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">known</span><span class="p">,</span> <span class="n">knownlength</span> <span class="o">=</span> <span class="n">known_select</span><span class="p">(</span><span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">capsule_</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">chosen_var_list</span> <span class="o">=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">qry</span> <span class="o">=</span> <span class="n">known</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+            <span class="c1"># capture max distance</span>
+            <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">qry</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">qry</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">qry</span> <span class="o">=</span> <span class="p">(</span><span class="n">qry</span> <span class="o">-</span> <span class="n">qry</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">qry</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">qry</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="n">max_</span> <span class="o">+=</span> <span class="n">dtw</span><span class="o">.</span><span class="n">distance_fast</span><span class="p">(</span><span class="n">qry</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">qry</span><span class="p">))</span>
+
+            <span class="n">dist</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">batch_cond</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">data_pull</span><span class="p">[</span><span class="n">data_pull</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">batch_cond</span><span class="p">[</span><span class="s1">&#39;Capsule Start&#39;</span><span class="p">][</span><span class="n">b</span><span class="p">]]</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="p">[</span><span class="n">ts</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">batch_cond</span><span class="p">[</span><span class="s1">&#39;Capsule End&#39;</span><span class="p">][</span><span class="n">b</span><span class="p">]]</span>
+                <span class="c1"># normalise data if level doesnt matter, only shape</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">qry</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input capsule as too few data points, please remove capsule starting at &quot;</span> <span class="o">+</span>
+                          <span class="nb">str</span><span class="p">(</span><span class="n">batch_cond</span><span class="p">[</span><span class="s1">&#39;Capsule Start&#39;</span><span class="p">][</span><span class="n">b</span><span class="p">]))</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">qry</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">qry</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="k">pass</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">qry</span> <span class="o">=</span> <span class="p">(</span><span class="n">qry</span> <span class="o">-</span> <span class="n">qry</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">qry</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">qry</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+                            <span class="n">ts</span> <span class="o">=</span> <span class="p">(</span><span class="n">ts</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+
+                    <span class="n">distance</span> <span class="o">=</span> <span class="n">dtw</span><span class="o">.</span><span class="n">distance_fast</span><span class="p">(</span><span class="n">qry</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">qry</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">time_distort</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)))</span>
+                    <span class="n">meta_data</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">distance</span>
+                    <span class="n">dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+
+            <span class="c1"># size for cost function addition from zero</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="n">chosen_var_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">total_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dist</span><span class="p">))</span>
+
+            <span class="c1"># Totalise distances to find best multi variate match</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dist</span> <span class="ow">and</span> <span class="kc">True</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">dist</span><span class="p">):</span>
+                <span class="n">total_dist</span> <span class="o">+=</span> <span class="n">dist</span>
+
+        <span class="n">total_dist_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">total_dist</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">])</span>
+
+        <span class="n">min_</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">total_dist_df</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">max_</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">total_dist_df</span><span class="o">.</span><span class="n">distance</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_dist_df</span><span class="o">.</span><span class="n">distance</span> <span class="o">-</span> <span class="n">min_</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">max_</span> <span class="o">-</span> <span class="n">min_</span><span class="p">)</span>
+        <span class="n">total_dist_df</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">total_dist_df</span><span class="o">.</span><span class="n">distance</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">total_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">total_dist_df</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">capsule_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">found_sim_overall</span> <span class="o">=</span> <span class="n">total_dist</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">found_sim_overall</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">total_dist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">found_sim_overall</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">found_sim_overall</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_dist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">batch_sim_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">found_sim_overall</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Similarity&#39;</span><span class="p">])</span>
+    <span class="n">batch_sim_df</span><span class="p">[</span><span class="s1">&#39;Similarity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">batch_sim_df</span><span class="p">[</span><span class="s1">&#39;Similarity&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="n">batch_sim_df</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch_cond</span><span class="p">[</span><span class="s1">&#39;Capsule Start&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span>
+            <span class="n">batch_cond</span><span class="p">[</span><span class="s1">&#39;Capsule End&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">batch_cond</span><span class="p">[</span><span class="s1">&#39;Capsule Start&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="n">batch_sim_df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">batch_sim_df</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">])</span>
+    <span class="n">batch_sim_df</span> <span class="o">=</span> <span class="n">batch_sim_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">meta_data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="s2">&quot;% Contribution to Dissimilarity from &quot;</span> <span class="o">+</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">columns</span>
+
+    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">meta_data</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="c1"># meta_data= meta_data.div(meta_data[&quot;sum&quot;], axis=0)*100</span>
+    <span class="n">meta_data</span> <span class="o">=</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">meta_data</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">batch_sim_df</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">batch_sim_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">batch_sim_df</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">batch_sim_df</span></div>
+
+
+<div class="viewcode-block" id="push_mps_results_batch"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.push_mps_results_batch">[docs]</a><span class="k">def</span> <span class="nf">push_mps_results_batch</span><span class="p">(</span><span class="n">batch_sim_df</span><span class="p">,</span> <span class="n">workbook_id</span><span class="p">,</span> <span class="n">condition_name</span><span class="p">,</span> <span class="n">Sheet_index</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function pushes the % similarity score as a % dis-similarity time series signal to a new worksheet within the</span>
+<span class="sd">    desired workbook in the case mps is in batch mode. In addition each variable&#39;s % contribution to the dis-similarity</span>
+<span class="sd">    is also pushes as a signal per variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    batch_sim_df: pd.DataFrame</span>
+<span class="sd">        A dataframe or series that minimally has columns of</span>
+<span class="sd">        [&#39;Similarity&#39;, &#39;Date-Time&#39;].</span>
+<span class="sd">        This has the resulting similarity measure of each defined capsule with the centered datetime.</span>
+<span class="sd">    workbook_id : str</span>
+<span class="sd">        The Seeq ID of the source workbook</span>
+<span class="sd">    condition_name: str</span>
+<span class="sd">        Name of condition to leverage in the pushed item names.</span>
+<span class="sd">    Sheet_index: int</span>
+<span class="sd">        Integer detailing the index of the source worksheet.</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    end: bool</span>
+<span class="sd">        Indicator for UI to display successful ending.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">batch_sim_df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Similarity&quot;</span><span class="p">:</span> <span class="n">condition_name</span> <span class="o">+</span> <span class="s2">&quot;_Dissimilarity_measure&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">batch_sim_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;Contribution&#39;</span> <span class="ow">in</span> <span class="n">col_name</span><span class="p">:</span>
+            <span class="n">batch_sim_df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">col_name</span><span class="p">:</span> <span class="n">col_name</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">condition_name</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># get info from worksheet before push overwrites</span>
+    <span class="n">wb_id</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">search</span><span class="p">({</span><span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="n">workbook_id</span><span class="p">},</span>
+                                 <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                 <span class="p">)</span>
+
+    <span class="n">workbook</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">wb_id</span><span class="p">,</span>
+                                  <span class="n">include_referenced_workbooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                  <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">worksheet_og</span> <span class="o">=</span> <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="n">Sheet_index</span><span class="p">]</span>
+    <span class="n">current_display_items</span> <span class="o">=</span> <span class="n">worksheet_og</span><span class="o">.</span><span class="n">display_items</span>
+
+    <span class="c1"># push similarity signal</span>
+    <span class="n">push_result_2</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">batch_sim_df</span><span class="p">,</span>
+                             <span class="n">workbook</span><span class="o">=</span><span class="n">workbook_id</span><span class="p">,</span>
+                             <span class="n">worksheet</span><span class="o">=</span><span class="s2">&quot;MPS results &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M&quot;</span><span class="p">)),</span>
+                             <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">)</span>
+
+    <span class="c1"># push worksheet back in after overwrite</span>
+    <span class="n">new_display_items</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">current_display_items</span><span class="p">,</span> <span class="n">push_result_2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">lane_</span> <span class="o">=</span> <span class="n">current_display_items</span><span class="p">[</span><span class="n">current_display_items</span><span class="p">[</span><span class="s1">&#39;Samples Display&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Line&#39;</span><span class="p">][</span><span class="s1">&#39;Lane&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="n">workbook</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">wb_id</span><span class="p">,</span>
+                                  <span class="n">include_referenced_workbooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                  <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">lane_count</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">batch_sim_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">new_display_items</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">new_display_items</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">new_display_items</span><span class="p">[</span><span class="s2">&quot;Samples Display&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Bars&quot;</span>
+        <span class="n">new_display_items</span><span class="p">[</span><span class="s2">&quot;Line Width&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">40</span>
+        <span class="n">new_display_items</span><span class="p">[</span><span class="s2">&quot;Lane&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lane_</span> <span class="o">+</span> <span class="n">lane_count</span>
+        <span class="n">lane_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">display_items</span> <span class="o">=</span> <span class="n">new_display_items</span>
+    <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">display_range</span> <span class="o">=</span> <span class="n">worksheet_og</span><span class="o">.</span><span class="n">display_range</span>
+
+    <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">workbook</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">push_result_2</span><span class="p">[</span><span class="s2">&quot;Value Unit Of Measure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;%&quot;</span>
+    <span class="n">push_result_2</span><span class="p">[</span><span class="s2">&quot;Maximum Interpolation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1 sec&quot;</span>
+    <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="n">push_result_2</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">end</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">end</span></div>
+
+
+<div class="viewcode-block" id="push_mps_results"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.push_mps_results">[docs]</a><span class="k">def</span> <span class="nf">push_mps_results</span><span class="p">(</span>
+        <span class="n">Return_top_x</span><span class="p">,</span> <span class="n">min_idx_multivar</span><span class="p">,</span> <span class="n">data_pull</span><span class="p">,</span> <span class="n">workbook_id</span><span class="p">,</span> <span class="n">condition_name</span><span class="p">,</span> <span class="n">Sheet_index</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function pushes the % similarity score as a % dis-similarity time series signal to a new worksheet within the</span>
+<span class="sd">    desired workbook in the case mps is in continuous mode. In addition each variable&#39;s % contribution to the</span>
+<span class="sd">    dis-similarity is also pushes as a signal per variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Return_top_x: int</span>
+<span class="sd">        Variable to limit number of top found capsules.</span>
+<span class="sd">    min_idx_multivar: numpy.ndarray</span>
+<span class="sd">        numpy array of three columns</span>
+<span class="sd">        1st = found capsules similarity measurement (float 0 to 1)</span>
+<span class="sd">        2nd = integer index of each found capsule relative to data_pull</span>
+<span class="sd">        3rd = integer describing the duration/length of the found capsule (each integer is defined by griding in</span>
+<span class="sd">        &#39;pull_mps_data&#39;)</span>
+<span class="sd">    data_pull: pd.DataFrame, pd.Series</span>
+<span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
+<span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
+<span class="sd">        with an index of timestamps.</span>
+<span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
+<span class="sd">        This dataframe has all the time series data for the analysis/search area.</span>
+<span class="sd">    workbook_id : str</span>
+<span class="sd">        The Seeq ID of the source workbook.</span>
+<span class="sd">    condition_name: str</span>
+<span class="sd">        Name of condition to leverage in the pushed item names.</span>
+<span class="sd">    Sheet_index: int</span>
+<span class="sd">        Integer detailing the index of the source worksheet.</span>
+<span class="sd">    grid: str</span>
+<span class="sd">        Resolution/griding of the spy pull.</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    end: bool</span>
+<span class="sd">        Indicator for UI to display successful ending.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">grid_</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1sec&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;10sec&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;30sec&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;1min&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;5min&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="s1">&#39;10min&#39;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span> <span class="s1">&#39;30min&#39;</span><span class="p">:</span> <span class="mi">1800</span><span class="p">}[</span><span class="n">grid</span><span class="p">]</span>
+
+    <span class="c1"># if less than requested top results</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">min_idx_multivar</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No Results Found&quot;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="c1"># Prep and unzip found data</span>
+        <span class="n">found_list</span> <span class="o">=</span> <span class="n">min_idx_multivar</span><span class="p">[:</span><span class="n">Return_top_x</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">sim_list</span> <span class="o">=</span> <span class="n">min_idx_multivar</span><span class="p">[:</span><span class="n">Return_top_x</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">known_length_list</span> <span class="o">=</span> <span class="n">min_idx_multivar</span><span class="p">[:</span><span class="n">Return_top_x</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="c1"># use index to find datetime</span>
+        <span class="n">push_cond</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_pull</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">found_list</span><span class="p">])</span>
+        <span class="n">push_cond</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Capsule Start&quot;</span><span class="p">]</span>
+        <span class="n">push_cond</span><span class="p">[</span><span class="s2">&quot;Capsule End&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">push_cond</span><span class="p">[</span><span class="s2">&quot;Capsule Start&quot;</span><span class="p">]</span>
+
+        <span class="c1"># add by known length</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">known_length_list</span><span class="p">)):</span>
+            <span class="n">push_cond</span><span class="p">[</span><span class="s2">&quot;Capsule End&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">push_cond</span><span class="p">[</span><span class="s2">&quot;Capsule Start&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span>
+                <span class="n">seconds</span><span class="o">=</span><span class="n">known_length_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">grid_</span><span class="p">)</span>
+
+        <span class="n">push_cond</span> <span class="o">=</span> <span class="n">push_cond</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">push_cond</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">push_cond</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">push_cond</span><span class="p">[</span><span class="s1">&#39;Similarity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sim_list</span>
+
+        <span class="c1"># get info from worksheet before push overwrites</span>
+        <span class="n">wb_id</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">search</span><span class="p">({</span><span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="n">workbook_id</span><span class="p">},</span>
+                                     <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                     <span class="p">)</span>
+
+        <span class="n">workbook</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">wb_id</span><span class="p">,</span>
+                                      <span class="n">include_referenced_workbooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                      <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                      <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">worksheet_og</span> <span class="o">=</span> <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="n">Sheet_index</span><span class="p">]</span>
+        <span class="n">current_display_items</span> <span class="o">=</span> <span class="n">worksheet_og</span><span class="o">.</span><span class="n">display_items</span>
+        <span class="n">lane_</span> <span class="o">=</span> <span class="n">current_display_items</span><span class="p">[</span><span class="n">current_display_items</span><span class="p">[</span><span class="s1">&#39;Samples Display&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Line&#39;</span><span class="p">][</span><span class="s1">&#39;Lane&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+        <span class="c1"># push found conditions</span>
+        <span class="n">push_result</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">push_cond</span><span class="p">,</span> <span class="n">workbook</span><span class="o">=</span><span class="n">workbook_id</span><span class="p">,</span>
+                               <span class="n">worksheet</span><span class="o">=</span><span class="s2">&quot;MPS results &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M&quot;</span><span class="p">)),</span>
+                               <span class="n">metadata</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span>
+                                   <span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="n">condition_name</span><span class="p">,</span>
+                                   <span class="s1">&#39;Type&#39;</span><span class="p">:</span> <span class="s1">&#39;Condition&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;Maximum Duration&#39;</span><span class="p">:</span> <span class="s1">&#39;20d&#39;</span>
+                               <span class="p">}]),</span>
+                               <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">)</span>
+
+        <span class="c1"># create dataframe to push similarity signal</span>
+        <span class="n">push_sig</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">min_idx_multivar</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">push_sig</span> <span class="o">=</span> <span class="n">push_sig</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">Return_top_x</span><span class="p">]</span>
+
+        <span class="n">temp_c_list</span> <span class="o">=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">temp_c_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;% Contribution to Dissimilarity from &quot;</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">condition_name</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">temp_c_list</span><span class="p">]</span>
+        <span class="n">name_</span> <span class="o">=</span> <span class="n">condition_name</span> <span class="o">+</span> <span class="s2">&quot;_Dissimilarity_measure&quot;</span>
+        <span class="n">temp_c_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">name_</span><span class="p">)</span>
+
+        <span class="n">push_sig</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">temp_c_list</span>
+
+        <span class="n">push_sig</span><span class="p">[</span><span class="s1">&#39;temp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">push_cond</span><span class="p">[</span><span class="s2">&quot;Capsule Start&quot;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">known_length_list</span><span class="p">)):</span>
+            <span class="n">push_sig</span><span class="p">[</span><span class="s1">&#39;temp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">push_sig</span><span class="p">[</span><span class="s1">&#39;temp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span>
+                    <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="p">(</span><span class="n">known_length_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grid_</span><span class="p">)</span>
+
+        <span class="n">push_sig</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">push_sig</span><span class="o">.</span><span class="n">temp</span><span class="p">)</span>
+        <span class="n">push_sig</span> <span class="o">=</span> <span class="n">push_sig</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;temp&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># change to dissimilarity</span>
+        <span class="n">push_sig</span><span class="p">[</span><span class="n">name_</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">-</span> <span class="n">push_sig</span><span class="p">[</span><span class="n">name_</span><span class="p">]</span>
+
+        <span class="c1"># push similarity signal</span>
+        <span class="n">push_result_2</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">push_sig</span><span class="p">,</span>
+                                 <span class="n">workbook</span><span class="o">=</span><span class="n">workbook_id</span><span class="p">,</span>
+                                 <span class="n">worksheet</span><span class="o">=</span><span class="s2">&quot;MPS results &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M&quot;</span><span class="p">)),</span>
+                                 <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                 <span class="p">)</span>
+
+        <span class="n">push_result_2</span><span class="p">[</span><span class="s2">&quot;Value Unit Of Measure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;%&quot;</span>
+        <span class="n">push_result_2</span><span class="p">[</span><span class="s2">&quot;Maximum Interpolation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1 sec&quot;</span>
+        <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="n">push_result_2</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># push worksheet back in after overwrite</span>
+        <span class="n">new_display_items</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">current_display_items</span><span class="p">,</span> <span class="n">push_result</span><span class="p">,</span> <span class="n">push_result_2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">workbook</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">wb_id</span><span class="p">,</span>
+                                      <span class="n">include_referenced_workbooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                      <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                      <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">lane_count</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">push_sig</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">new_display_items</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">new_display_items</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">new_display_items</span><span class="p">[</span><span class="s2">&quot;Samples Display&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Bars&quot;</span>
+            <span class="n">new_display_items</span><span class="p">[</span><span class="s2">&quot;Line Width&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">40</span>
+            <span class="n">new_display_items</span><span class="p">[</span><span class="s2">&quot;Lane&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lane_</span> <span class="o">+</span> <span class="n">lane_count</span>
+            <span class="n">lane_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">display_items</span> <span class="o">=</span> <span class="n">new_display_items</span>
+        <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">display_range</span> <span class="o">=</span> <span class="n">worksheet_og</span><span class="o">.</span><span class="n">display_range</span>
+        <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">workbook</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">end</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">end</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Seeq Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example Use Cases &mdash; seeq-mps 0.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/seeq-favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Code Documentation" href="docstrings.html" />
+    <link rel="prev" title="User Guide" href="user_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> seeq-mps
+            <img src="_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Use Cases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-use-case-1-batch-mode-golden-batch-analysis">Example Use Case 1. Batch Mode: Golden batch analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-use-case-2-continuous-mode-bad-actor-search">Example Use Case 2. Continuous Mode: Bad actor search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docstrings.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">seeq-mps</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Example Use Cases</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/examples.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="example-use-cases">
+<h1>Example Use Cases<a class="headerlink" href="#example-use-cases" title="Permalink to this headline"></a></h1>
+<p>This set of use cases is a small subset of the typical types of analyses that can be conducted using the
+<strong>seeq-mps</strong> Add-on.</p>
+<section id="example-use-case-1-batch-mode-golden-batch-analysis">
+<h2>Example Use Case 1. Batch Mode: Golden batch analysis<a class="headerlink" href="#example-use-case-1-batch-mode-golden-batch-analysis" title="Permalink to this headline"></a></h2>
+<p>This use case will display the <strong>seeq-mps</strong> Add-on ability to perform golden batch analysis.</p>
+<p>The basic oxygen steelmaking (BOS) process converts pig iron into steel by blowing oxygen through a lance into the
+process vessel to remove carbon from the batch of iron. Figure 1 shows a diagram of a typical BOS process unit. The
+BOS dataset used for this use case comprises the following time series data shown in Figure 2:</p>
+<ul class="simple">
+<li><p>Audiometer – audiometer reading, sensitive to the level of slag</p></li>
+<li><p>W. G. Flow – waste gas flow rate (WGF)</p></li>
+<li><p>Lance Sep – lance separation (height above the bath containing steel)</p></li>
+<li><p>dc/dt – rate of carbon leaving vessel</p></li>
+<li><p>XRF Fe cps – Xray fluorescence Fe in waste gas in counts per second</p></li>
+</ul>
+<br>
+<table border="0">
+ <tr>
+    <td><img alt="image" src="_static/example1_process.png"></td>
+ </tr>
+ <tr>
+    <td>Figure 1. Basic oxygen Steelmaking (BOS) process unit.</td>
+ </tr>
+</table>
+<br><br>
+<table border="0">
+ <tr>
+    <td><img alt="image" src="_static/example1_onebatch.png"></td>
+ </tr>
+ <tr>
+    <td>Figure 2. Basic oxygen Steelmaking (BOS) example signal trends for a single batch.</td>
+ </tr>
+</table>
+<br><br>
+<p>Operators and engineers monitoring batch processes refer to a reference batch with optimal performance metrics a ‘golden
+batch’, it is typical to review and compare every subsequent batch produced against this golden batch. Figure 3 shows
+many batches of the BOS process with conditions indicating which batches are golden and which are batches to be assessed
+in comparison (purple). The <strong>seeq-mps</strong> Add-on provides a comparison of each batch against the ‘golden batch’ set.
+The enables batch assessments without having to wait for lab results for each new batch. Figure 4 below<br />
+displays the result output from the <strong>seeq-mps</strong> Add-on run in batch mode on this dataset. The blue bar signal shows the
+output % dissimilarity measured by the Add-on, with all subsequent bar signals detailing each variable’s contribution to
+the corresponding batch’s measured % dissimilarity.</p>
+<br>
+<table border="0">
+ <tr>
+    <td><img alt="image" src="_static/example1a.png"></td>
+ </tr>
+ <tr>
+    <td>Figure 3. Basic oxygen Steelmaking (BOS) example signal trends all batches.</td>
+ </tr>
+</table>
+<br><br>
+<table border="0">
+ <tr>
+    <td><img alt="image" src="_static/example1b.png"></td>
+ </tr>
+ <tr>
+    <td>Figure 4. Basic oxygen Steelmaking (BOS) example with seeq-mps Add-on results.</td>
+ </tr>
+</table>
+<br><br>
+<p>Insights gained:</p>
+<ul class="simple">
+<li><p>Dissimilarity signal gives a quantitative measure of batch performance as soon as the batch is completed.</p></li>
+<li><p>Variable contribution signals assist corrective action investigations by highlighting problem areas</p></li>
+</ul>
+</section>
+<section id="example-use-case-2-continuous-mode-bad-actor-search">
+<h2>Example Use Case 2. Continuous Mode: Bad actor search<a class="headerlink" href="#example-use-case-2-continuous-mode-bad-actor-search" title="Permalink to this headline"></a></h2>
+<p>This use case will display the  ability of <strong>seeq-mps</strong>  to search for similar process events for continuous processes.</p>
+<p>A continuous process dataset from a Cooling Tower is used for this example, it comprises the following time series data
+shown in Figure 5:</p>
+<ul class="simple">
+<li><p>Compressor power (kW)</p></li>
+<li><p>Relative humidity (%)</p></li>
+<li><p>Temperature (def F)</p></li>
+</ul>
+<br>
+<table border="0">
+ <tr>
+    <td><img alt="image" src="_static/example2a.png"></td>
+ </tr>
+ <tr>
+    <td>Figure 5. Cooling Tower example signal trends.</td>
+ </tr>
+</table>
+<br><br>
+<p>When a production issue occurs, it is often extremely valuable starting point for operations personnel to
+find other, similar instances in history. <strong>seeq-mps</strong> can help accelerate this search. The start and end time of the
+production issue is known and a condition is created to add context using Seeq Workbench. Figure 6 shows a zoomed view
+of Figure 5 to highlight the details in the known production issue condition (in this case a single capsule).</p>
+<br>
+<table border="0">
+ <tr>
+    <td><img alt="image" src="_static/example2a2.png"></td>
+ </tr>
+ <tr>
+    <td>Figure 6. Cooling Tower example production issue zoomed in.</td>
+ </tr>
+</table>
+<br><br>
+<p><strong>seeq-mps</strong> finds 4 other similar production issues in the dataset (shown in figures 7 and 8). The results are sent
+back to the user’s workbook as a new worksheet. Each identified event has a % dissimilarity value; this allows quick
+identification of events that have the same characteristics as the latest undesirable production event. Each signal has
+a % contribution value - this is the influence of the signal on the overall dissimilarity. The % contribution is useful
+to identify potential bad actors that may be good candidates to focus initial troubleshooting efforts.</p>
+<br>
+<table border="0">
+ <tr>
+    <td><img alt="image" src="_static/example2b.png"></td>
+ </tr>
+ <tr>
+    <td>Figure 7. Cooling Tower example seeq-mps results.</td>
+ </tr>
+</table>
+<br><br>
+<table border="0">
+ <tr>
+    <td><img alt="image" src="_static/example2c.png"></td>
+ </tr>
+ <tr>
+    <td>Figure 8. Cooling Tower example seeq-mps results chain view.</td>
+ </tr>
+</table>
+<br><br></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="user_guide.html" class="btn btn-neutral float-left" title="User Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="docstrings.html" class="btn btn-neutral float-right" title="Code Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Seeq Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
