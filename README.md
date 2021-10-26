@@ -92,6 +92,7 @@ python setup.py install
 ```
 
 ###Troubleshooting
+
 If you experience the following error:
 ```
 Exception: The compiled dtaidistance C library is not available. See the documentation for alternative installation
