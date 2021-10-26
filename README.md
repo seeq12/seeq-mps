@@ -7,8 +7,8 @@
 **Multivariate Pattern Search [MPS]** is a Seeq Add-on for multivariate search and similarity assessment. This Add-on 
 supports both continuous and batch processes. In continuous mode, the Add-on finds multivariate profiles in time that 
 are similar to a visually captured reference. 
-In batch mode, the Add-on computes a multivariate similarity score per batch that allows the user to find batches that 
-are similar or dissimilar to a prespecified ‘golden’ reference set. Additionally, MPS also provides a contribution score
+In batch mode, the Add-on computes a multivariate similarity score per batch that allows the user to identify batches that 
+are similar or dissimilar to a prespecified ‘golden’ reference set ('golden batches'). Additionally, MPS also provides a contribution score
 for each signal. This allows the user to determine which signals contributed to the observed similarity or dissimilarity
 and utilize that information for accelerated diagnostics/troubleshooting.
 
