@@ -12,7 +12,7 @@ matches your Seeq server. For more information on the `seeq` module see [seeq at
 
 If you want to install **seeq-mps** as a Seeq Add-on, you will need:
 
-- Seeq Data Lab (>=R51.1.0, >=R52.1.0, >=53.0.0 or >=R54.0.2)
+- Seeq Data Lab (>=53.0.0 or >=R54.0.2)
 - `seeq` module whose version matches the Seeq server version
 - Seeq administrator access
 - Enable Add-on in the Seeq server
@@ -25,6 +25,27 @@ courtesy and does not imply any guarantee or obligation for support from the pub
 1. Create a **new** Seeq Data Lab project and open the **Terminal** window
 2. Run `pip install seeq-mps`
 3. Run `python -m seeq.addons.mps [--users <users_list> --groups <groups_list>]`
+
+----
+
+## Installation from source
+
+You can get started by cloning the repository with the command:
+
+```shell
+git clone git@github.com:seeq12/seeq-mps.git
+```
+
+For development work, it is highly recommended creating a python virtual environment and install the package in that
+working environment. If you are not familiar with python virtual environments, you can take a
+look [here](https://docs.python.org/3.8/tutorial/venv.html)
+
+Once your virtual environment is activated, you can install requirements and **seeq-mps** from source with:
+
+```shell
+pip install -r requirements.txt
+python setup.py install
+```
 
 ## Troubleshooting
 
