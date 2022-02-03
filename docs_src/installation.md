@@ -13,7 +13,8 @@ matches your Seeq server. For more information on the `seeq` module see [seeq at
 If you want to install **seeq-mps** as a Seeq Add-on, you will need:
 
 - Seeq Data Lab (>=53.0.0 or >=R54.0.2)
-- `seeq` module whose version matches the Seeq server version
+- `seeq` module whose version matches the Seeq server version 
+  
 - Seeq administrator access
 - Enable Add-on in the Seeq server
 

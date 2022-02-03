@@ -197,7 +197,7 @@ def pull_mps_data(workbook_id, worksheet_id, signal_pull_list, items_s_ref, data
         requested to be pulled (detailed in items_s_ref input variable) and 'Date-Time'
         with an index of timestamps.
         [X, ..., Y,'Date-Time'].
-        This dataframe has all the time series data for the analysis/search area.
+        This dataframe has all the time series data for the analysis/search area.known_select
     data_pull_c: pd.DataFrame, pd.Series
         A dataframe or series that minimally has columns of "X, ..., Y" signals
         requested to be pulled (detailed in items_s_ref input variable) and 'Date-Time'
@@ -217,7 +217,6 @@ def pull_mps_data(workbook_id, worksheet_id, signal_pull_list, items_s_ref, data
     items_s = items_s[items_s['Name'].isin(signal_pull_list)]
 
     data_pull = spy.pull(items_s, start=time_frame[0], end=time_frame[1], quiet=True, grid=grid)
-
     data_pull['Date-Time'] = pd.to_datetime(data_pull.index)
     data_pull = data_pull.dropna()
 
@@ -1079,6 +1078,7 @@ def push_mps_results(
             new_display_items["Lane"].loc[i] = lane_ + lane_count
             lane_count += 1
 
+        new_display_items.reset_index(drop=True, inplace=True)
         workbook.worksheets[-1].display_items = new_display_items
         workbook.worksheets[-1].display_range = worksheet_og.display_range
         spy.workbooks.push(workbook, quiet=True)
