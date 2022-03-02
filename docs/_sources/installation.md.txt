@@ -12,8 +12,9 @@ matches your Seeq server. For more information on the `seeq` module see [seeq at
 
 If you want to install **seeq-mps** as a Seeq Add-on, you will need:
 
-- Seeq Data Lab (>=R51.1.0, >=R52.1.0, >=53.0.0 or >=R54.0.2)
-- `seeq` module whose version matches the Seeq server version
+- Seeq Data Lab (>=53.0.0 or >=R54.0.2)
+- `seeq` module whose version matches the Seeq server version 
+  
 - Seeq administrator access
 - Enable Add-on in the Seeq server
 
@@ -24,9 +25,43 @@ courtesy and does not imply any guarantee or obligation for support from the pub
 
 1. Create a **new** Seeq Data Lab project and open the **Terminal** window
 2. Run `pip install seeq-mps`
-3. Run `python -m seeq.addons.mps [--users <users_list> --groups <groups_list>]`
+3. Run `python -m seeq.addons.mps`
 
-###Troubleshooting
+Follow the instructions when prompted. ("Username or Access Key" is what you use to log in to Seeq. "Password" is your 
+password for logging into Seeq.)
+
+There are additional **Options** for the addon installation. These include `--users` and `--groups`. These can be used 
+to change permissions for the addon tool. For example to give permission to users `me` and `you` one would install the 
+addon with as:
+
+```bash
+python -m seeq.addons.clustering --users me you
+```
+
+----
+
+## Installation from source
+
+You can get started by cloning the repository with the command:
+
+```shell
+git clone git@github.com:seeq12/seeq-mps.git
+```
+
+For development work, it is highly recommended creating a python virtual environment and install the package in that
+working environment. If you are not familiar with python virtual environments, you can take a
+look [here](https://docs.python.org/3.8/tutorial/venv.html)
+
+Once your virtual environment is activated, you can install requirements and **seeq-mps** from source with:
+
+```shell
+pip install -r requirements.txt
+python setup.py install
+```
+----
+
+## Troubleshooting
+
 If you experience the following error:
 ```
 Exception: The compiled dtaidistance C library is not available. See the documentation for alternative installation
