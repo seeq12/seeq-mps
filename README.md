@@ -58,8 +58,18 @@ courtesy and does not imply any guarantee or obligation for support from the pub
 
 1. Create a **new** Seeq Data Lab project and open the **Terminal** window
 2. Run `pip install seeq-mps`
-3. Run `python -m seeq.addons.mps [--users <users_list> --groups <groups_list>]`
+3. Run `python -m seeq.addons.mps`
 
+Follow the instructions when prompted. ("Username or Access Key" is what you use to log in to Seeq. "Password" is your 
+password for logging into Seeq.)
+
+There are additional **Options** for the addon installation. These include `--users` and `--groups`. These can be used 
+to change permissions for the addon tool. For example to give permission to users `me` and `you` one would install the 
+addon with as:
+
+```bash
+python -m seeq.addons.clustering --users me you
+```
 ----
 
 # Development
