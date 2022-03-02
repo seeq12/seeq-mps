@@ -87,7 +87,10 @@ Mps analysis is launched from within Seeq Workbench tool tab within Add-ons sub-
 11. (Optional) Manually configure timeframe of analysis (investigation range in the workbook used as default)
 12. (Optional) Configure advanced options: Select important signal characteristics (shape and/or level)
 13. (Optional) Configure advanced options: Slider to configure degree of dynamic time warping allowed
-14. Run the analysis
+14. Run the analysis by clicking the 'Execute' button
+15. Wait for the 'Execute' button to turn green
+16. Close Add-on window
+17. Click back to the workbench and refresh the webpage to view the new worksheet created with the MPS results  
 
 
 <br>

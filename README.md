@@ -1,4 +1,4 @@
-[![N|Solid](https://www.seeq.com/sites/default/files/seeq-logo-navbar-small.png)](https://www.seeq.com)
+[![N|Solid](https://www.seeq.com/sites/default/files/seeq-content/seeq-logo-blue-web-33h.svg)](https://www.seeq.com)
 
 [![N|Scheme](https://seeq12.github.io/seeq-mps/_static/mpsworkflowexample.png)](https://seeq12.github.io/seeq-mps/index.html)
 
@@ -28,6 +28,8 @@ provides an in-depth explanation of reference search, batch analysis and how see
 analyses using **seeq-mps** can be found in the
 section [Use Cases](https://seeq12.github.io/seeq-mps/examples.html).
 
+
+
 -----
 
 # Installation
@@ -44,7 +46,7 @@ matches your Seeq server. For more information on the `seeq` module see [seeq at
 
 If you want to install **seeq-mps** as a Seeq Add-on, you will need:
 
-- Seeq Data Lab (>=R51.1.0, >=R52.1.0, >=53.0.0 or >=R54.0.2)
+- Seeq Data Lab (>=53.0.0 or >=R54.0.2)
 - `seeq` module whose version matches the Seeq server version
 - Seeq administrator access
 - Enable Add-on in the Seeq server

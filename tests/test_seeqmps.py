@@ -25,7 +25,7 @@ def test_batch_calc():
     
     # run function to test
     Batch_sim_df = mps.seeq_mps_dtw_batch(batch_cond, data_pull, data_pull_c, data_pull_known, True, time_distort)
-    Batch_sim_df_test = pd.read_pickle('test_objects/batch_results.plk')
+    Batch_sim_df_test = pd.read_pickle('test_objects/batch_results.pkl')
     # Batch_sim_df_test.columns = ['Similarity']
 
     assert Batch_sim_df_test.equals(Batch_sim_df)
