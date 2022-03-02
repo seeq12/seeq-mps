@@ -28,7 +28,9 @@ provides an in-depth explanation of reference search, batch analysis and how see
 analyses using **seeq-mps** can be found in the
 section [Use Cases](https://seeq12.github.io/seeq-mps/examples.html).
 
+The video below is a short demonstration of the MPS add-on
 
+https://user-images.githubusercontent.com/5995501/156315178-a55b7a52-4ea5-46cb-8f52-d3f7d7998ab8.mp4
 
 -----
 
