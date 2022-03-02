@@ -346,6 +346,7 @@ class MpsUI(ipw.VBox):
                              self.adv_dropdown,
                              self.space_, self.button
                              ]
+
         super().__init__(self.display_list)
 
         self.return_all_.on_click(self.return_all)
@@ -651,6 +652,7 @@ class MpsUI(ipw.VBox):
         worksheet = workbook[0].worksheets[sheet_index_]
 
         new_display_items_ = pd.concat([push_ref_cap, items_s_ref], axis=0, sort=True)
+        new_display_items_.reset_index(drop=True, inplace=True)
         worksheet.display_items = new_display_items_
 
         new_worksheet_start = worksheet.display_range['Start'] - 3 * (

@@ -1018,6 +1018,8 @@ def push_mps_results(
         lane_ = current_display_items[current_display_items['Samples Display'] == 'Line']['Lane'].max()
 
         # push found conditions
+        push_cond.reset_index(drop=True, inplace=True)
+
         push_result = spy.push(data=push_cond, workbook=workbook_id,
                                worksheet="MPS results " + str(datetime.now().strftime("%d/%m/%Y %H:%M")),
                                metadata=pd.DataFrame([{

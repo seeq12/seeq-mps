@@ -1,4 +1,4 @@
-[![N|Solid](https://www.seeq.com/sites/default/files/seeq-logo-navbar-small.png)](https://www.seeq.com)
+[![N|Solid](https://www.seeq.com/sites/default/files/seeq-content/seeq-logo-blue-web-33h.svg)](https://www.seeq.com)
 
 [![N|Scheme](https://seeq12.github.io/seeq-mps/_static/mpsworkflowexample.png)](https://seeq12.github.io/seeq-mps/index.html)
 
@@ -27,6 +27,8 @@ and utilize that information for accelerated diagnostics/troubleshooting.
 provides an in-depth explanation of reference search, batch analysis and how seeq-mps works. Examples of typical 
 analyses using **seeq-mps** can be found in the
 section [Use Cases](https://seeq12.github.io/seeq-mps/examples.html).
+
+
 
 -----
 
