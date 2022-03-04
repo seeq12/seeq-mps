@@ -58,6 +58,7 @@ Once your virtual environment is activated, you can install requirements and **s
 pip install -r requirements.txt
 python setup.py install
 ```
+----
 
 ## Troubleshooting
 
