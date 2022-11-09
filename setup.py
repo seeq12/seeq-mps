@@ -40,8 +40,8 @@ setup_args = dict(
         'IPython>=7.21.0',
         'ipywidgets>=7.6.3',
         'mass_ts>=0.1.4',
-        'numpy>=1.21.0',
-        'pandas>=1.0.1',
+        'numpy>=1.22.2',
+        'pandas>=1.4.1',
         'scipy>=1.5.4',
     ],
     classifiers=[

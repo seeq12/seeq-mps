@@ -4,8 +4,9 @@ import pytest
 import pickle
 import pandas as pd
 import numpy as np
-from pathlib import Path
+
 from seeq.addons.mps import _mps as mps
+
 
 import sys
 sys.path.append(".")
@@ -16,16 +17,30 @@ def test_batch_calc():
     # test batch Sim calc
 
     # load test input
-    batch_cond = pd.read_pickle('test_objects/data_pull_parameters_batchcal_input1.pkl')
-    data_pull = pd.read_pickle('test_objects/data_pull_parameters_batchcal_input2.pkl')
-    data_pull_c = pd.read_pickle('test_objects/data_pull_parameters_batchcal_input3.pkl')
-    data_pull_known = pd.read_pickle('test_objects/data_pull_parameters_batchcal_input4.pkl')
-    
+
+    batch_cond = pd.read_csv('test_objects/data_pull_parameters_batchcal_input1.csv', index_col=0)
+    batch_cond['Capsule Start'] = pd.to_datetime(batch_cond['Capsule Start'])
+    batch_cond['Capsule End'] = pd.to_datetime(batch_cond['Capsule End'])
+    data_pull = pd.read_csv('test_objects/data_pull_parameters_batchcal_input2.csv', index_col=0)
+    data_pull['Date-Time'] = pd.to_datetime(data_pull['Date-Time'])
+    data_pull.index = pd.to_datetime(data_pull.index)
+    data_pull_c = pd.read_csv('test_objects/data_pull_parameters_batchcal_input3.csv', index_col=0)
+    data_pull_c['Date-Time'] = pd.to_datetime(data_pull_c['Date-Time'])
+    data_pull_c.index = pd.to_datetime(data_pull_c.index)
+    data_pull_known = pd.read_csv('test_objects/data_pull_parameters_batchcal_input4.csv', index_col=0)
+    data_pull_known['Capsule Start'] = pd.to_datetime(data_pull_known['Capsule Start'])
+    data_pull_known['Capsule End'] = pd.to_datetime(data_pull_known['Capsule End'])
+
     time_distort = 0.04
-    
+
     # run function to test
     Batch_sim_df = mps.seeq_mps_dtw_batch(batch_cond, data_pull, data_pull_c, data_pull_known, True, time_distort)
-    Batch_sim_df_test = pd.read_pickle('test_objects/batch_results.pkl')
+    Batch_sim_df = Batch_sim_df.apply(pd.to_numeric)
+    Batch_sim_df = Batch_sim_df.round(decimals=2)
+    Batch_sim_df_test = pd.read_csv('test_objects/batch_results.csv', index_col=0)
+    Batch_sim_df_test.index = pd.to_datetime(Batch_sim_df_test.index)
+    Batch_sim_df_test = Batch_sim_df_test.round(decimals=2)
+
     # Batch_sim_df_test.columns = ['Similarity']
 
     assert Batch_sim_df_test.equals(Batch_sim_df)
@@ -37,9 +52,9 @@ def test_cts_calc_mass():
     # test continuous Mass calc with no data normalisation
 
     # load test input
-    data_pull = pd.read_pickle('test_objects/data_pull_parameters_mass_input1.pkl')
-    data_pull_c = pd.read_pickle('test_objects/data_pull_parameters_mass_input2.pkl')
-    data_pull_known = pd.read_pickle('test_objects/data_pull_parameters_mass_input3.pkl')
+    data_pull = pd.read_csv('test_objects/data_pull_parameters_mass_input1.csv', index_col=0)
+    data_pull_c = pd.read_csv('test_objects/data_pull_parameters_mass_input2.csv', index_col=0)
+    data_pull_known = pd.read_csv('test_objects/data_pull_parameters_mass_input3.csv', index_col=0)
 
     similarity = 0.9
     sim = True
@@ -54,7 +69,7 @@ def test_cts_calc_mass():
     
     file_2.close()
 
-    assert np.array_equal(min_idx_multivar_test, min_idx_multivar)
+    assert np.allclose(min_idx_multivar_test, min_idx_multivar, atol=0.1)
 
 
 @pytest.mark.unit
@@ -63,9 +78,9 @@ def test_cts_calc_dtw():
     # test continuous Mass calc with data normalisation
 
     # load test input
-    data_pull = pd.read_pickle('test_objects/data_pull_parameters_dtw_input1.pkl')
-    data_pull_c = pd.read_pickle('test_objects/data_pull_parameters_dtw_input2.pkl')
-    data_pull_known = pd.read_pickle('test_objects/data_pull_parameters_dtw_input3.pkl')
+    data_pull = pd.read_csv('test_objects/data_pull_parameters_dtw_input1.csv', index_col=0)
+    data_pull_c = pd.read_csv('test_objects/data_pull_parameters_dtw_input2.csv', index_col=0)
+    data_pull_known = pd.read_csv('test_objects/data_pull_parameters_dtw_input3.csv', index_col=0)
 
     similarity = 0.9
     sim = True
@@ -81,4 +96,4 @@ def test_cts_calc_dtw():
 
     file_2.close()
 
-    assert np.array_equal(min_idx_multivar_test, min_idx_multivar)
+    assert np.allclose(min_idx_multivar_test, min_idx_multivar, atol=0.1)

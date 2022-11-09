@@ -1,3 +1,5 @@
+[![Build Status](https://teamcity.seeq-labs.com/app/rest/builds/buildType:(id:AppliedResearch_mps)/statusIcon)](https://github.com/seeq12/seeq-mps/)
+
 [![N|Solid](https://www.seeq.com/sites/default/files/seeq-content/seeq-logo-blue-web-33h.svg)](https://www.seeq.com)
 
 [![N|Scheme](https://seeq12.github.io/seeq-mps/_static/mpsworkflowexample.png)](https://seeq12.github.io/seeq-mps/index.html)
@@ -28,7 +30,9 @@ provides an in-depth explanation of reference search, batch analysis and how see
 analyses using **seeq-mps** can be found in the
 section [Use Cases](https://seeq12.github.io/seeq-mps/examples.html).
 
+The video below is a short demonstration of the MPS add-on
 
+https://user-images.githubusercontent.com/5995501/156315178-a55b7a52-4ea5-46cb-8f52-d3f7d7998ab8.mp4
 
 -----
 
@@ -58,8 +62,18 @@ courtesy and does not imply any guarantee or obligation for support from the pub
 
 1. Create a **new** Seeq Data Lab project and open the **Terminal** window
 2. Run `pip install seeq-mps`
-3. Run `python -m seeq.addons.mps [--users <users_list> --groups <groups_list>]`
+3. Run `python -m seeq.addons.mps`
 
+Follow the instructions when prompted. ("Username or Access Key" is what you use to log in to Seeq. "Password" is your 
+password for logging into Seeq.)
+
+There are additional **Options** for the addon installation. These include `--users` and `--groups`. These can be used 
+to change permissions for the addon tool. For example to give permission to users `me` and `you` one would install the 
+addon with as:
+
+```bash
+python -m seeq.addons.clustering --users me you
+```
 ----
 
 # Development
