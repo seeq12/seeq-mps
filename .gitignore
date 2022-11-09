@@ -1,3 +1,6 @@
-/venv/
+/venv
 /.idea
 /venv2
+/dist
+/build
+/seeq_mps.egg-info
