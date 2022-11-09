@@ -897,11 +897,11 @@ def push_mps_results_batch(batch_sim_df, workbook_id, condition_name, Sheet_inde
 
     worksheet_og = workbook.worksheets[Sheet_index]
     current_display_items = worksheet_og.display_items
-
+    worksheet_name = "MPS results " + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     # push similarity signal
     push_result_2 = spy.push(data=batch_sim_df,
                              workbook=workbook_id,
-                             worksheet="MPS results " + str(datetime.now().strftime("%d/%m/%Y %H:%M")),
+                             worksheet=worksheet_name,
                              quiet=True
                              )
 
@@ -922,8 +922,8 @@ def push_mps_results_batch(batch_sim_df, workbook_id, condition_name, Sheet_inde
         new_display_items["Lane"].loc[i] = lane_ + lane_count
         lane_count += 1
 
-    workbook.worksheets[-1].display_items = new_display_items
-    workbook.worksheets[-1].display_range = worksheet_og.display_range
+    workbook.worksheets[worksheet_name].display_items = new_display_items
+    workbook.worksheets[worksheet_name].display_range = worksheet_og.display_range
 
     spy.workbooks.push(workbook, quiet=True)
 
@@ -974,7 +974,7 @@ def push_mps_results(
     end: bool
         Indicator for UI to display successful ending.
     """
-
+    worksheet_name = "MPS results " + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     grid_ = {'1sec': 1, '10sec': 10, '30sec': 30, '1min': 60, '5min': 300, '10min': 600, '30min': 1800}[grid]
 
     # if less than requested top results
@@ -1021,7 +1021,7 @@ def push_mps_results(
         push_cond.reset_index(drop=True, inplace=True)
 
         push_result = spy.push(data=push_cond, workbook=workbook_id,
-                               worksheet="MPS results " + str(datetime.now().strftime("%d/%m/%Y %H:%M")),
+                               worksheet=worksheet_name,
                                metadata=pd.DataFrame([{
                                    'Name': condition_name,
                                    'Type': 'Condition',
@@ -1056,7 +1056,7 @@ def push_mps_results(
         # push similarity signal
         push_result_2 = spy.push(data=push_sig,
                                  workbook=workbook_id,
-                                 worksheet="MPS results " + str(datetime.now().strftime("%d/%m/%Y %H:%M")),
+                                 worksheet=worksheet_name,
                                  quiet=True
                                  )
 
@@ -1081,8 +1081,9 @@ def push_mps_results(
             lane_count += 1
 
         new_display_items.reset_index(drop=True, inplace=True)
-        workbook.worksheets[-1].display_items = new_display_items
-        workbook.worksheets[-1].display_range = worksheet_og.display_range
+
+        workbook.worksheets[worksheet_name].display_items = new_display_items
+        workbook.worksheets[worksheet_name].display_range = worksheet_og.display_range
         spy.workbooks.push(workbook, quiet=True)
 
         end = True
