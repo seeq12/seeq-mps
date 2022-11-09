@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>seeq.addons.mps._mps &mdash; seeq-mps 0.3.0 documentation</title>
+  <title>seeq.addons.mps._mps &mdash; seeq-mps 0.3.2 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../../../_static/seeq-favicon.ico"/>
@@ -14,6 +14,7 @@
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -29,7 +30,7 @@
             <img src="../../../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.3.0
+                0.3.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -274,7 +275,7 @@
 <span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
 <span class="sd">        with an index of timestamps.</span>
 <span class="sd">        [X, ..., Y,&#39;Date-Time&#39;].</span>
-<span class="sd">        This dataframe has all the time series data for the analysis/search area.</span>
+<span class="sd">        This dataframe has all the time series data for the analysis/search area.known_select</span>
 <span class="sd">    data_pull_c: pd.DataFrame, pd.Series</span>
 <span class="sd">        A dataframe or series that minimally has columns of &quot;X, ..., Y&quot; signals</span>
 <span class="sd">        requested to be pulled (detailed in items_s_ref input variable) and &#39;Date-Time&#39;</span>
@@ -294,7 +295,6 @@
     <span class="n">items_s</span> <span class="o">=</span> <span class="n">items_s</span><span class="p">[</span><span class="n">items_s</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">signal_pull_list</span><span class="p">)]</span>
 
     <span class="n">data_pull</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">items_s</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">time_frame</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">time_frame</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
-
     <span class="n">data_pull</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
     <span class="n">data_pull</span> <span class="o">=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 
@@ -975,11 +975,11 @@
 
     <span class="n">worksheet_og</span> <span class="o">=</span> <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="n">Sheet_index</span><span class="p">]</span>
     <span class="n">current_display_items</span> <span class="o">=</span> <span class="n">worksheet_og</span><span class="o">.</span><span class="n">display_items</span>
-
+    <span class="n">worksheet_name</span> <span class="o">=</span> <span class="s2">&quot;MPS results &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M:%S&quot;</span><span class="p">))</span>
     <span class="c1"># push similarity signal</span>
     <span class="n">push_result_2</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">batch_sim_df</span><span class="p">,</span>
                              <span class="n">workbook</span><span class="o">=</span><span class="n">workbook_id</span><span class="p">,</span>
-                             <span class="n">worksheet</span><span class="o">=</span><span class="s2">&quot;MPS results &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M&quot;</span><span class="p">)),</span>
+                             <span class="n">worksheet</span><span class="o">=</span><span class="n">worksheet_name</span><span class="p">,</span>
                              <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
                              <span class="p">)</span>
 
@@ -1000,8 +1000,8 @@
         <span class="n">new_display_items</span><span class="p">[</span><span class="s2">&quot;Lane&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lane_</span> <span class="o">+</span> <span class="n">lane_count</span>
         <span class="n">lane_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
-    <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">display_items</span> <span class="o">=</span> <span class="n">new_display_items</span>
-    <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">display_range</span> <span class="o">=</span> <span class="n">worksheet_og</span><span class="o">.</span><span class="n">display_range</span>
+    <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="n">worksheet_name</span><span class="p">]</span><span class="o">.</span><span class="n">display_items</span> <span class="o">=</span> <span class="n">new_display_items</span>
+    <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="n">worksheet_name</span><span class="p">]</span><span class="o">.</span><span class="n">display_range</span> <span class="o">=</span> <span class="n">worksheet_og</span><span class="o">.</span><span class="n">display_range</span>
 
     <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">workbook</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -1052,7 +1052,7 @@
 <span class="sd">    end: bool</span>
 <span class="sd">        Indicator for UI to display successful ending.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
+    <span class="n">worksheet_name</span> <span class="o">=</span> <span class="s2">&quot;MPS results &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M:%S&quot;</span><span class="p">))</span>
     <span class="n">grid_</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1sec&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;10sec&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;30sec&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;1min&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;5min&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="s1">&#39;10min&#39;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span> <span class="s1">&#39;30min&#39;</span><span class="p">:</span> <span class="mi">1800</span><span class="p">}[</span><span class="n">grid</span><span class="p">]</span>
 
     <span class="c1"># if less than requested top results</span>
@@ -1096,8 +1096,10 @@
         <span class="n">lane_</span> <span class="o">=</span> <span class="n">current_display_items</span><span class="p">[</span><span class="n">current_display_items</span><span class="p">[</span><span class="s1">&#39;Samples Display&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Line&#39;</span><span class="p">][</span><span class="s1">&#39;Lane&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
         <span class="c1"># push found conditions</span>
+        <span class="n">push_cond</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
         <span class="n">push_result</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">push_cond</span><span class="p">,</span> <span class="n">workbook</span><span class="o">=</span><span class="n">workbook_id</span><span class="p">,</span>
-                               <span class="n">worksheet</span><span class="o">=</span><span class="s2">&quot;MPS results &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M&quot;</span><span class="p">)),</span>
+                               <span class="n">worksheet</span><span class="o">=</span><span class="n">worksheet_name</span><span class="p">,</span>
                                <span class="n">metadata</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span>
                                    <span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="n">condition_name</span><span class="p">,</span>
                                    <span class="s1">&#39;Type&#39;</span><span class="p">:</span> <span class="s1">&#39;Condition&#39;</span><span class="p">,</span>
@@ -1132,7 +1134,7 @@
         <span class="c1"># push similarity signal</span>
         <span class="n">push_result_2</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">push_sig</span><span class="p">,</span>
                                  <span class="n">workbook</span><span class="o">=</span><span class="n">workbook_id</span><span class="p">,</span>
-                                 <span class="n">worksheet</span><span class="o">=</span><span class="s2">&quot;MPS results &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M&quot;</span><span class="p">)),</span>
+                                 <span class="n">worksheet</span><span class="o">=</span><span class="n">worksheet_name</span><span class="p">,</span>
                                  <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
                                  <span class="p">)</span>
 
@@ -1156,8 +1158,10 @@
             <span class="n">new_display_items</span><span class="p">[</span><span class="s2">&quot;Lane&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lane_</span> <span class="o">+</span> <span class="n">lane_count</span>
             <span class="n">lane_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">display_items</span> <span class="o">=</span> <span class="n">new_display_items</span>
-        <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">display_range</span> <span class="o">=</span> <span class="n">worksheet_og</span><span class="o">.</span><span class="n">display_range</span>
+        <span class="n">new_display_items</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="n">worksheet_name</span><span class="p">]</span><span class="o">.</span><span class="n">display_items</span> <span class="o">=</span> <span class="n">new_display_items</span>
+        <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">[</span><span class="n">worksheet_name</span><span class="p">]</span><span class="o">.</span><span class="n">display_range</span> <span class="o">=</span> <span class="n">worksheet_og</span><span class="o">.</span><span class="n">display_range</span>
         <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">workbook</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">end</span> <span class="o">=</span> <span class="kc">True</span>
