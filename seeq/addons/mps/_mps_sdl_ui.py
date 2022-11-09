@@ -241,6 +241,18 @@ class MpsUI(ipw.VBox):
                 self.get_worksheet_data(
                     self.workbook_id,
                     self.worksheet_id)
+            nodata_ = False
+        except:
+            Error_msg = "Error: Please ensure the analysis worksheet has at least one numerical signal and one " \
+                        "condition, Or check your version of Seeq server matches the installed version of seeq module "\
+                        "(spy)"
+            self.display_list = [ipw.HTML(value=f"<b><font color='red'><font size=4>{Error_msg}</b>")]
+
+            super().__init__(self.display_list)
+
+            nodata_ = True
+
+        if not nodata_:
 
             self.known_cap_.options = self.condition_list
             self.batch_cap_.options = self.condition_list
@@ -365,15 +377,6 @@ class MpsUI(ipw.VBox):
             self.cont_data.on_click(self.cont_data_push)
             self.remove_sig_.on_click(self.remove_sig_select)
             self.add_sig_.on_click(self.new_sig_select)
-
-        except:
-            Error_msg = "Error: Please ensure the analysis worksheet has at least one numerical signal and one " \
-                        "condition"
-            self.display_list = [ipw.HTML(value = f"<b><font color='red'><font size=4>{Error_msg}</b>")]
-
-            super().__init__(self.display_list)
-
-
 
     # action on click of execute MPS: Pull data to pandas, run MASS, push found conditions back to worksheet
     def on_button_clicked2(self, b):
