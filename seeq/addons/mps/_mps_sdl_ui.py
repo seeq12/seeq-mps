@@ -52,7 +52,7 @@ class MpsUI(ipw.VBox):
                     pass
         except:
             pass
-
+        self.output = ipw.Output()
         self.found_cap_name_ = ipw.Text(
             value='MPS Analysis ' + str(max_name + 1),
             placeholder='MPS Analysis ' + str(max_name + 1),
@@ -68,8 +68,9 @@ class MpsUI(ipw.VBox):
         )
 
         self.get_meta = ipw.Button(description="Connect to workbook")
+        text_title = 'Multivariate Pattern Search'
+        self.title_ = ipw.HTML(value = f"<b><font color='green'><font size=5>{text_title}</b>")
 
-        self.title_ = ipw.HBox([ipw.Label(value="Multivariate Pattern Search")])
 
         self.find__ = ipw.HBox([ipw.Label(value="")])
 
@@ -82,12 +83,12 @@ class MpsUI(ipw.VBox):
             disabled=False,
         )
 
-        self.add_sig_ = ipw.Button(description="Signal", disabled=False, icon='plus', layout=ipw.Layout(left='200px'))
+        self.add_sig_ = ipw.Button(description="Signal", disabled=False, icon='plus', layout=ipw.Layout(left='150px'))
 
         self.remove_sig_ = ipw.Button(description="Signal", disabled=True, icon='minus',
-                                      layout=ipw.Layout(left='200px'))
+                                      layout=ipw.Layout(left='150px'))
 
-        self.all_sig_ = ipw.Button(description="Add All Signals", disabled=False, layout=ipw.Layout(width='200px'))
+        self.all_sig_ = ipw.Button(description="Add All Signals", disabled=False, layout=ipw.Layout(width='150px'))
 
         self.time_title = ipw.HBox(
             [ipw.Label(value="2. Time Frame of search default set to workbook investigation range")])
@@ -235,130 +236,147 @@ class MpsUI(ipw.VBox):
         self.button = ipw.Button(description="Execute", layout=ipw.Layout(left='200px'), disabled=True)
 
         # get meta data to populate widgets
-        self.condition_list, self.signal_list, self.sheet_start, self.sheet_end, self.sheet_index = \
-            self.get_worksheet_data(
-                self.workbook_id,
-                self.worksheet_id)
+        try:
+            self.condition_list, self.signal_list, self.sheet_start, self.sheet_end, self.sheet_index = \
+                self.get_worksheet_data(
+                    self.workbook_id,
+                    self.worksheet_id)
+            nodata_ = False
+        except:
+            Error_msg = "Error: Please ensure the analysis worksheet has at least one numerical signal and one " \
+                        "condition, Or check your version of Seeq server matches the installed version of seeq module "\
+                        "(spy)"
+            self.display_list = [ipw.HTML(value=f"<b><font color='red'><font size=4>{Error_msg}</b>")]
 
-        self.known_cap_.options = self.condition_list
-        self.batch_cap_.options = self.condition_list
-        self.time_frame1.value = datetime.strptime(str(self.sheet_start)[:10], '%Y-%m-%d')
-        self.time_frame2.value = datetime.strptime(str(self.sheet_end)[:10], '%Y-%m-%d')
+            super().__init__(self.display_list)
 
-        self.start_hour.value = str(self.sheet_start)[11:13]
-        if round(int(str(self.sheet_start)[14:16]) / 10) * 10 == 60:
-            self.start_min.value = "50"
-        elif round(int(str(self.sheet_start)[14:16]) / 10) * 10 == 0:
-            self.start_min.value = "00"
-        else:
-            self.start_min.value = str(round(int(str(self.sheet_start)[14:16]) / 10) * 10)
+            nodata_ = True
 
-            self.end_hour.value = str(self.sheet_end)[11:13]
-        if round(int(str(self.sheet_end)[14:16]) / 10) * 10 == 60:
-            self.end_min.value = "50"
-        elif round(int(str(self.sheet_end)[14:16]) / 10) * 10 == 0:
-            self.end_min.value = "00"
-        else:
-            self.end_min.value = str(round(int(str(self.sheet_end)[14:16]) / 10) * 10)
+        if not nodata_:
 
-        self.signals_.options = [""] + self.signal_list
+            self.known_cap_.options = self.condition_list
+            self.batch_cap_.options = self.condition_list
+            self.time_frame1.value = datetime.strptime(str(self.sheet_start)[:10], '%Y-%m-%d')
+            self.time_frame2.value = datetime.strptime(str(self.sheet_end)[:10], '%Y-%m-%d')
 
-        self.mypath = 'References'
-        if not path.exists(self.mypath):
-            makedirs(self.mypath)
+            self.start_hour.value = str(self.sheet_start)[11:13]
+            if round(int(str(self.sheet_start)[14:16]) / 10) * 10 == 60:
+                self.start_min.value = "50"
+            elif round(int(str(self.sheet_start)[14:16]) / 10) * 10 == 0:
+                self.start_min.value = "00"
+            else:
+                self.start_min.value = str(round(int(str(self.sheet_start)[14:16]) / 10) * 10)
 
-        self.files_ = [f[:-4] for f in listdir(self.mypath) if isfile(join(self.mypath, f))]
+                self.end_hour.value = str(self.sheet_end)[11:13]
+            if round(int(str(self.sheet_end)[14:16]) / 10) * 10 == 60:
+                self.end_min.value = "50"
+            elif round(int(str(self.sheet_end)[14:16]) / 10) * 10 == 0:
+                self.end_min.value = "00"
+            else:
+                self.end_min.value = str(round(int(str(self.sheet_end)[14:16]) / 10) * 10)
 
-        self.pick_load_file_ = ipw.Dropdown(
-            options=[' '] + self.files_,
-            value=' ',
-            description='Select file:',
-            disabled=False,
-        )
+            self.signals_.options = [""] + self.signal_list
 
-        self.save_name = ipw.Text(
-            value='',
-            placeholder='',
-            description='Save name',
-            disabled=False
-        )
+            self.mypath = 'References'
+            if not path.exists(self.mypath):
+                makedirs(self.mypath)
 
-        self.load_button_ = ipw.Button(description="Load", layout=ipw.Layout(left='200px'))
+            self.files_ = [f[:-4] for f in listdir(self.mypath) if isfile(join(self.mypath, f))]
 
-        self.save_button_ = ipw.Button(description="save", layout=ipw.Layout(left='200px'))
+            self.pick_load_file_ = ipw.Dropdown(
+                options=[' '] + self.files_,
+                value=' ',
+                description='Select file:',
+                disabled=False,
+            )
 
-        self.select_dropdown = ipw.Accordion(children=[
-            ipw.VBox([self.known_cap_, self.find_sig_, self.all_sig_, self.signals_, self.add_sig_, self.remove_sig_
-                      ])
-        ],
-            selected_index=0,
-            layout=ipw.Layout(width='370px'))
+            self.save_name = ipw.Text(
+                value='',
+                placeholder='',
+                description='Save name',
+                disabled=False
+            )
 
-        self.select_dropdown.set_title(0, "Select condition within investigation range")
+            self.load_button_ = ipw.Button(description="Load", layout=ipw.Layout(left='150px'))
 
-        self.load_save_dropdown = ipw.Accordion(children=[
-            ipw.VBox([self.save_name,
-                      self.save_button_
-                      ]),
-            ipw.VBox([self.pick_load_file_,
-                      self.load_button_
-                      ])
-        ],
-            selected_index=None,
-            layout=ipw.Layout(width='370px'))
+            self.save_button_ = ipw.Button(description="save", layout=ipw.Layout(left='150px'))
 
-        self.load_save_dropdown.set_title(0, "Save reference")
-        self.load_save_dropdown.set_title(1, "Load reference")
-        self.items_s_ref = None
-        self.data_pull_known = None
-        self.time_dropdown = ipw.Accordion(
-            children=[ipw.VBox([self.time_title_, self.start_hrmin, self.end_hrmin, self.second_res
-                                ])],
-            selected_index=None,
-            layout=ipw.Layout(width='370px'))
+            self.select_dropdown = ipw.Accordion(children=[
+                ipw.VBox([self.known_cap_, self.find_sig_, self.all_sig_, self.signals_, self.add_sig_, self.remove_sig_
+                          ])
+            ],
+                selected_index=0,
+                layout=ipw.Layout(width='370px'))
 
-        self.time_dropdown.set_title(0, "Select Analysis timeframe")
+            self.select_dropdown.set_title(0, "Select condition within investigation range")
 
-        self.adv_dropdown = ipw.Accordion(
-            children=[ipw.VBox([self.Algo_, self.Shape_, self.Level_, self.time_title, self.time_distort_,
-                                ])],
-            selected_index=None,
-            layout=ipw.Layout(width='370px'))
+            self.load_save_dropdown = ipw.Accordion(children=[
+                ipw.VBox([self.save_name,
+                          self.save_button_
+                          ]),
+                ipw.VBox([self.pick_load_file_,
+                          self.load_button_
+                          ])
+            ],
+                selected_index=None,
+                layout=ipw.Layout(width='370px'))
 
-        self.adv_dropdown.set_title(0, "Advanced Options")
+            self.load_save_dropdown.set_title(0, "Save reference")
+            self.load_save_dropdown.set_title(1, "Load reference")
+            self.items_s_ref = None
+            self.data_pull_known = None
+            self.time_dropdown = ipw.Accordion(
+                children=[ipw.VBox([self.time_title_, self.start_hrmin, self.end_hrmin, self.second_res
+                                    ])],
+                selected_index=None,
+                layout=ipw.Layout(width='370px'))
 
-        self.batch_text = ipw.HBox([ipw.Label(value="Please select batch condition", layout=ipw.Layout(left='11px'))])
+            self.time_dropdown.set_title(0, "Select Analysis timeframe")
 
-        self.batch_data = ipw.Button(description="Batch")
-        self.cont_data = ipw.Button(description="Continuous")
+            self.adv_dropdown = ipw.Accordion(
+                children=[ipw.VBox([self.Algo_, self.Shape_, self.Level_, self.time_title, self.time_distort_,
+                                    ])],
+                selected_index=None,
+                layout=ipw.Layout(width='370px'))
 
-        self.bat_con_select = ipw.HBox([self.batch_data, self.cont_data], layout=ipw.Layout(left='50px'))
+            self.adv_dropdown.set_title(0, "Advanced Options")
 
-        self.load_ref_ = ipw.Button(description="Review Ref", layout=ipw.Layout(left='200px'))
-        self.ref_title2_ = ipw.HBox([ipw.Label(value="Select the corresponding signals to match reference")])
+            self.batch_text = ipw.HBox([ipw.Label(value="Please select batch condition", layout=ipw.Layout(left='11px'))])
 
-        self.space_ = ipw.HBox([ipw.Label(value="                    ")])
+            self.batch_data = ipw.Button(description="Batch")
+            self.cont_data = ipw.Button(description="Continuous")
+            self.space_ = ipw.HBox([ipw.Label(value="                    ")])
 
-        self.display_list = [self.title_, self.found_cap_name_, self.find__, self.select_dropdown,
-                             self.load_save_dropdown,
-                             self.data_type_, self.bat_con_select, self.space_,
-                             self.time_dropdown,
-                             self.adv_dropdown,
-                             self.space_, self.button
-                             ]
+            self.bat_con_select = ipw.VBox([
+                                    ipw.HBox([self.batch_data, self.cont_data]),
+                                    self.space_
+                                            ])
 
-        super().__init__(self.display_list)
+            self.load_ref_ = ipw.Button(description="Review Ref", layout=ipw.Layout(left='150px'))
+            self.ref_title2_ = ipw.HBox([ipw.Label(value="Select the corresponding signals to match reference")])
 
-        self.return_all_.on_click(self.return_all)
-        self.save_button_.on_click(self.save)
-        self.load_button_.on_click(self.load_ref)
-        self.load_ref_.on_click(self.review_ref)
-        self.button.on_click(self.on_button_clicked2)
-        self.all_sig_.on_click(self.add_all_sig)
-        self.batch_data.on_click(self.bat_data_push)
-        self.cont_data.on_click(self.cont_data_push)
-        self.remove_sig_.on_click(self.remove_sig_select)
-        self.add_sig_.on_click(self.new_sig_select)
+
+
+            self.display_list = [self.title_, self.found_cap_name_, self.find__, self.select_dropdown,
+                                 self.load_save_dropdown,
+                                 self.data_type_, self.bat_con_select, self.space_,
+                                 self.time_dropdown,
+                                 self.adv_dropdown,
+                                 self.space_, self.button
+                                 ]
+
+            super().__init__(self.display_list)
+
+            self.return_all_.on_click(self.return_all)
+            self.save_button_.on_click(self.save)
+            self.load_button_.on_click(self.load_ref)
+            self.load_ref_.on_click(self.review_ref)
+            self.button.on_click(self.on_button_clicked2)
+            self.all_sig_.on_click(self.add_all_sig)
+            self.batch_data.on_click(self.bat_data_push)
+            self.cont_data.on_click(self.cont_data_push)
+            self.remove_sig_.on_click(self.remove_sig_select)
+            self.add_sig_.on_click(self.new_sig_select)
 
     # action on click of execute MPS: Pull data to pandas, run MASS, push found conditions back to worksheet
     def on_button_clicked2(self, b):
@@ -577,10 +595,16 @@ class MpsUI(ipw.VBox):
 
         # find worksheet index from url
         # find worksheet index
+        count = 0
         try:
             sheet_list = desired_workbook[0].worksheets
             sheet_index = [i for i, s in enumerate(sheet_list) if worksheet_id in str(s)][0]
-        except IndexError:
+            sheet_start = desired_workbook[0].worksheets[sheet_index].display_range['Start'].astimezone(
+                pytz.timezone(lz_))
+            sheet_end = desired_workbook[0].worksheets[sheet_index].display_range['End'].astimezone(
+                pytz.timezone(lz_))
+            count += 1
+        except:
             print('ERROR = Could not find worksheet: ' + str(worksheet_id))
 
         # define items in sheet
@@ -589,17 +613,16 @@ class MpsUI(ipw.VBox):
         try:
             items_c = items[items.Type == 'Condition']
             condition_list = items_c.Name.to_list()
-        except IndexError:
+            count += 1
+        except:
             print('ERROR = Could not find any Conditions')
 
         try:
             items_s = items[items.Type == 'Signal']
             signal_list = items_s.Name.to_list()
-        except IndexError:
+            count += 1
+        except:
             print('ERROR = Could not find any signals')
-
-        sheet_start = desired_workbook[0].worksheets[sheet_index].display_range['Start'].astimezone(pytz.timezone(lz_))
-        sheet_end = desired_workbook[0].worksheets[sheet_index].display_range['End'].astimezone(pytz.timezone(lz_))
 
         try:
             tf1 = desired_workbook[0].worksheets[sheet_index].display_range['Start']
@@ -609,6 +632,7 @@ class MpsUI(ipw.VBox):
             items_s = items_s[items_s['Name'].isin(signal_list)]
 
             data_pull = spy.pull(items_s, start=tf1, end=tf2, quiet=True)
+            count += 1
 
             for c in data_pull.columns:
                 if 'float64' != data_pull.dtypes[c]:
@@ -619,7 +643,8 @@ class MpsUI(ipw.VBox):
         except:
             pass
 
-        return condition_list, signal_list, sheet_start, sheet_end, sheet_index
+        if count == 4:
+            return condition_list, signal_list, sheet_start, sheet_end, sheet_index
 
     def review_ref(self, b):
 
@@ -627,6 +652,7 @@ class MpsUI(ipw.VBox):
         self.load_ref_.button_style = 'warning'
 
         load_name = self.pick_load_file_.value
+        load_sheet_name = str(load_name) + ' reference review ' + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
         items_s_ref, data_pull_known = mps.load_ref(load_name, self.mypath)
         condition_name2 = data_pull_known['Condition'].values[0]
 
@@ -636,7 +662,7 @@ class MpsUI(ipw.VBox):
                                                         'Maximum Duration': '20d'
                                                         }]),
                                 workbook=self.workbook_id,
-                                worksheet=str(load_name) + ' reference review',
+                                worksheet=load_sheet_name,
                                 quiet=True
                                 )
 
@@ -647,7 +673,7 @@ class MpsUI(ipw.VBox):
                                       quiet=True
                                       )
         sheet_index_ = \
-            [i for i, s in enumerate(workbook[0].worksheets) if str(load_name) + ' reference review' in str(s)][0]
+            [i for i, s in enumerate(workbook[0].worksheets) if load_sheet_name in str(s)][0]
 
         worksheet = workbook[0].worksheets[sheet_index_]
 
@@ -669,14 +695,8 @@ class MpsUI(ipw.VBox):
         self.load_ref_.description = "link below"
         self.load_ref_.button_style = 'success'
         self.load_ref_.disabled = True
-
-        lin_k = self.server + 'workbook/' + self.workbook_id + '/worksheet/' + str(worksheet)[
-                                                                               str(worksheet).find('(') + 1:str(
-                                                                                   worksheet).find(')')]
-
-        link_widget = ipw.HTML(
-            value="<a href=" + str(lin_k) + ' target="_blank"' + ">Worksheet to review loaded reference</a>",
-            layout=ipw.Layout(left='100px'))
+        link_title = 'Worksheet added to analysis workbook for review'
+        link_widget = ipw.HTML(f"<b><font color='blue'><font size=2>{link_title}</b>")
 
         self.display_list[4].children[1].children = self.display_list[4].children[1].children[:] + (link_widget,)
 
@@ -836,29 +856,33 @@ class MpsUI(ipw.VBox):
         t.remove(str(self.known_cap_.value))
         self.batch_cap_.options = t
 
-        display_list2 = self.display_list[:7] + [self.batch_text, self.batch_cap_] + [self.space_, self.time_dropdown,
-                                                                                      self.adv_dropdown, self.space_,
-                                                                                      self.button]
+        self.display_list[6].children = [
+                                ipw.HBox([self.batch_data, self.cont_data]),
+                                self.batch_text,
+                                self.batch_cap_]
+
         self.button.disabled = False
         self.batch_data.button_style = 'info'
         self.cont_data.button_style = ''
 
         clear_output()
 
-        display(ipw.VBox(display_list2))
+        display(ipw.VBox(self.display_list))
 
     def cont_data_push(self, b):
 
-        display_list2 = self.display_list[:7] + [self.similarity_, self.return_] + [self.space_, self.time_dropdown,
-                                                                                    self.adv_dropdown, self.space_,
-                                                                                    self.button]
+        self.display_list[6].children = [
+                                ipw.HBox([self.batch_data, self.cont_data]),
+                                self.similarity_,
+                                self.return_]
+
         self.button.disabled = False
         self.cont_data.button_style = 'info'
         self.batch_data.button_style = ''
 
         clear_output()
 
-        display(ipw.VBox(display_list2))
+        display(ipw.VBox(self.display_list))
 
     def new_sig_select(self, b):
 
@@ -913,6 +937,9 @@ class MpsUI(ipw.VBox):
 
             if [i for i, n in enumerate(self.display_list[3].children[0].children) if n == self.remove_sig_][0] == 5:
                 self.remove_sig_.disabled = True
+
+            self.add_sig_.description = ''
+            self.add_sig_.disabled = False
 
         else:
 
