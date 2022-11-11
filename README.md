@@ -72,7 +72,7 @@ to change permissions for the addon tool. For example to give permission to user
 addon with as:
 
 ```bash
-python -m seeq.addons.clustering --users me you
+python -m seeq.addons.mps --users me you
 ```
 ----
 
