@@ -2,6 +2,10 @@
 
 v0.3.2
 ---
+Install bugfix and improvement
+
+v0.3.2
+---
 UI update to be compatible with seeq SDL R58+
 
 spy.push bugfix
