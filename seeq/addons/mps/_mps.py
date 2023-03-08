@@ -34,8 +34,8 @@ def gather_workbook_worksheet_meta_data(workbook_id, worksheet_id):
                                  )
 
     desired_workbook = spy.workbooks.pull(wb_id,
-                                          include_referenced_workbooks=False,
-                                          quiet=True
+                                          include_referenced_workbooks=False, include_inventory=False,
+                                          quiet=True, errors='catalog'
                                           )
 
     # find worksheet index
@@ -891,8 +891,8 @@ def push_mps_results_batch(batch_sim_df, workbook_id, condition_name, Sheet_inde
                                  )
 
     workbook = spy.workbooks.pull(wb_id,
-                                  include_referenced_workbooks=False,
-                                  quiet=True
+                                  include_referenced_workbooks=False, include_inventory=False,
+                                  quiet=True, errors='catalog'
                                   )[0]
 
     worksheet_og = workbook.worksheets[Sheet_index]
@@ -910,8 +910,8 @@ def push_mps_results_batch(batch_sim_df, workbook_id, condition_name, Sheet_inde
     lane_ = current_display_items[current_display_items['Samples Display'] == 'Line']['Lane'].max()
 
     workbook = spy.workbooks.pull(wb_id,
-                                  include_referenced_workbooks=False,
-                                  quiet=True
+                                  include_referenced_workbooks=False, include_inventory=False,
+                                  quiet=True, errors='catalog'
                                   )[0]
 
     lane_count = 1
@@ -1009,8 +1009,8 @@ def push_mps_results(
                                      )
 
         workbook = spy.workbooks.pull(wb_id,
-                                      include_referenced_workbooks=False,
-                                      quiet=True
+                                      include_referenced_workbooks=False, include_inventory=False,
+                                      quiet=True, errors='catalog'
                                       )[0]
 
         worksheet_og = workbook.worksheets[Sheet_index]
@@ -1068,8 +1068,8 @@ def push_mps_results(
         new_display_items = pd.concat([current_display_items, push_result, push_result_2], axis=0, sort=True)
 
         workbook = spy.workbooks.pull(wb_id,
-                                      include_referenced_workbooks=False,
-                                      quiet=True
+                                      include_referenced_workbooks=False, include_inventory=False,
+                                      quiet=True, errors='catalog'
                                       )[0]
 
         lane_count = 1
