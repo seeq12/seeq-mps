@@ -603,7 +603,7 @@ def seeq_mps_dtw(data_pull, data_pull_c, data_pull_known, threshold, normalise, 
         for time_distort_ in range(0, 1 + time_distort, 1):
             search_size_stretch = int(known.shape[0] * (time_distort_ / 100))
             # size of steps taken during dtw distance measurement across the dataset
-            window_step = round(len(known) * 0.05)
+            window_step = 1 #round(len(known) * 0.05)
             if window_step <= 0:
                 window_step = 1
             for var in data_pull.columns[:-1]:
