@@ -472,7 +472,9 @@ class MpsUI(ipw.VBox):
         if self.batch_data.button_style == 'info':
 
             desired_workbook = spy.workbooks.pull(spy.workbooks.search({'ID': self.workbook_id},
-                                                                       quiet=True
+                                                                       include_referenced_workbooks=False,
+                                                                       include_inventory=False,
+                                                                       quiet=True, errors='catalog'
                                                                        ),
                                                   include_referenced_workbooks=False,
                                                   quiet=True
@@ -589,8 +591,8 @@ class MpsUI(ipw.VBox):
                                           )
 
         desired_workbook = spy.workbooks.pull(spy_search,
-                                              include_referenced_workbooks=False,
-                                              quiet=True
+                                              include_referenced_workbooks=False, include_inventory=False,
+                                              quiet=True, errors='catalog'
                                               )
 
         # find worksheet index from url
@@ -667,7 +669,8 @@ class MpsUI(ipw.VBox):
                                 )
 
         workbook = spy.workbooks.pull(spy.workbooks.search({'ID': self.workbook_id},
-                                                           quiet=True
+                                                           include_referenced_workbooks=False, include_inventory=False,
+                                                           quiet=True, errors='catalog'
                                                            ),
                                       include_referenced_workbooks=False,
                                       quiet=True
