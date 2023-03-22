@@ -53,4 +53,3 @@ setup_args = dict(
 )
 
 setuptools.setup(**setup_args)
-
