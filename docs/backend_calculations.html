@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Backend &mdash; seeq-mps 0.3.2 documentation</title>
+  <title>Backend &mdash; seeq-mps 0.3.3 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="shortcut icon" href="_static/seeq-favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -30,10 +27,9 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> seeq-mps
-            <img src="_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.3.2
+                0.3.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -51,7 +47,21 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Use Cases</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="docstrings.html">Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_on_installation.html">Add-on Installation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Backend Calculations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Backend Calculations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.gather_workbook_worksheet_meta_data"><code class="docutils literal notranslate"><span class="pre">gather_workbook_worksheet_meta_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.known_select"><code class="docutils literal notranslate"><span class="pre">known_select()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.load_ref"><code class="docutils literal notranslate"><span class="pre">load_ref()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.pull_mps_data"><code class="docutils literal notranslate"><span class="pre">pull_mps_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.pull_ref_data"><code class="docutils literal notranslate"><span class="pre">pull_ref_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.push_mps_results"><code class="docutils literal notranslate"><span class="pre">push_mps_results()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.push_mps_results_batch"><code class="docutils literal notranslate"><span class="pre">push_mps_results_batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.save_ref"><code class="docutils literal notranslate"><span class="pre">save_ref()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.seeq_mps_dtw"><code class="docutils literal notranslate"><span class="pre">seeq_mps_dtw()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.seeq_mps_dtw_batch"><code class="docutils literal notranslate"><span class="pre">seeq_mps_dtw_batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.seeq_mps_mass"><code class="docutils literal notranslate"><span class="pre">seeq_mps_mass()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seeq.addons.mps._mps.sort_and_prepare_results"><code class="docutils literal notranslate"><span class="pre">sort_and_prepare_results()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="user_interface.html">User Interface</a></li>
 </ul>
 </li>
@@ -91,13 +101,13 @@
 <span class="sig-prename descclassname"><span class="pre">seeq.addons.mps._mps.</span></span><span class="sig-name descname"><span class="pre">gather_workbook_worksheet_meta_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workbook_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worksheet_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/seeq/addons/mps/_mps.html#gather_workbook_worksheet_meta_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.mps._mps.gather_workbook_worksheet_meta_data" title="Permalink to this definition"></a></dt>
 <dd><p>This function gathers workbook object data and worksheet index</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>workbook_id</strong> (<em>str</em>) – The Seeq ID of the source workbook</p></li>
 <li><p><strong>worksheet_id</strong> (<em>str</em>) – The Seeq ID of the source worksheet</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>desired_workbook</strong> (<em>list of seeq.spy.workbooks._workbook objects</em>) – and seeq spy workbook meta data</p></li>
 <li><p><strong>sheet_index</strong> (<em>int</em>) – integer detailing the index of the source worksheet</p></li>
@@ -113,7 +123,7 @@
 <dd><p>This function uses the known start and end time of the reference capsule/s and extracts the time series data from
 the entire time series data set within the investigation range of the worksheet.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_pull_c</strong> (<em>pd.DataFrame</em><em>, </em><em>pd.Series</em>) – A dataframe or series that minimally has columns of “X, …, Y” signals
 requested to be pulled (detailed in items_s_ref input variable) and ‘Date-Time’
@@ -128,7 +138,7 @@ This dataframe has all the time series data for the analysis/search area.</p></l
 <li><p><strong>select</strong> (<em>str</em>) – Name of the selected reference capsule.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>known</strong> (<em>pd.DataFrame, pd.Series</em>) – A dataframe or series that minimally has columns of “X, …, Y” signals
 requested to be pulled (detailed in items_s_ref input variable) and ‘Date-Time’
@@ -147,13 +157,13 @@ This dataframe has strictly only the time series data for the reference profile 
 <span class="sig-prename descclassname"><span class="pre">seeq.addons.mps._mps.</span></span><span class="sig-name descname"><span class="pre">load_ref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mypath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/seeq/addons/mps/_mps.html#load_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.mps._mps.load_ref" title="Permalink to this definition"></a></dt>
 <dd><p>This function loads the reference profile time series data and metadata from a previously saved pickle file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>load_name</strong> (<em>str</em>) – Name of the pickle file to load.</p></li>
 <li><p><strong>mypath</strong> (<em>str</em>) – Path to folder containing the pickle file to load.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>items_s_ref</strong> (<em>pd.DataFrame, pd.Series</em>) – A dataframe or series that minimally has columns of [‘Name’, ‘ID’, ‘Type’, ‘Color’, ‘Line Style’, ‘Line Width’,
 ‘Lane’, ‘Samples Display’, ‘Axis Auto Scale’, ‘Axis Align’, ‘Axis Group’, ‘Axis Show’] to detail the signals
@@ -172,22 +182,22 @@ to detail the capsule of the known reference profile capsule.</p></li>
 <span class="sig-prename descclassname"><span class="pre">seeq.addons.mps._mps.</span></span><span class="sig-name descname"><span class="pre">pull_mps_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workbook_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worksheet_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_pull_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items_s_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_pull_known</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/seeq/addons/mps/_mps.html#pull_mps_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.mps._mps.pull_mps_data" title="Permalink to this definition"></a></dt>
 <dd><p>This function gathers all the time series data required for the analysis, for the reference and the search area.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>workbook_id</strong> (<em>str</em>) – The Seeq ID of the source workbook.</p></li>
 <li><p><strong>worksheet_id</strong> (<em>str</em>) – The Seeq ID of the source worksheet.</p></li>
-<li><p><strong>signal_pull_list</strong> (<em>list of str</em>) – List of strings that detail the signal names to describe the reference profile.</p></li>
+<li><p><strong>signal_pull_list</strong> (<em>list</em><em> of </em><em>str</em>) – List of strings that detail the signal names to describe the reference profile.</p></li>
 <li><p><strong>items_s_ref</strong> (<em>pd.DataFrame</em><em>, </em><em>pd.Series</em>) – A dataframe or series that minimally has columns of [‘Name’, ‘ID’, ‘Type’, ‘Color’, ‘Line Style’, ‘Line Width’,
 ‘Lane’, ‘Samples Display’, ‘Axis Auto Scale’, ‘Axis Align’, ‘Axis Group’, ‘Axis Show’]. To detail the signals
 that describe the reference profile.</p></li>
 <li><p><strong>data_pull_known</strong> (<em>pd.DataFrame</em><em>, </em><em>pd.Series</em>) – A dataframe or series that minimally has columns of
 [‘Condition’, ‘Capsule Start’,’Capsule End’,’Capsule Is Uncertain’].
 to detail the capsule of the known reference profile capsule.</p></li>
-<li><p><strong>time_frame</strong> (<em>list of datetime</em>) – Start and end of the analysis range to search for the known capsule in the spy pull.</p></li>
+<li><p><strong>time_frame</strong> (<em>list</em><em> of </em><em>datetime</em>) – Start and end of the analysis range to search for the known capsule in the spy pull.</p></li>
 <li><p><strong>grid</strong> (<em>str</em>) – Details the resolution/griding of the spy pull</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>data_pull</strong> (<em>pd.DataFrame, pd.Series</em>) – A dataframe or series that minimally has columns of “X, …, Y” signals
 requested to be pulled (detailed in items_s_ref input variable) and ‘Date-Time’
@@ -213,7 +223,7 @@ This dataframe has all the time series data for the reference profile.</p></li>
 time series data to be gathered, a signal list instructs the variables to be gathered and the sampling rate or
 griding is set.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>items_s_ref</strong> (<em>pd.DataFrame</em><em>, </em><em>pd.Series</em>) – A dataframe or series that minimally has columns of
 [‘Name’, ‘ID’, ‘Type’, ‘Color’, ‘Line Style’, ‘Line Width’, ‘Lane’,
@@ -225,14 +235,14 @@ To detail the capsule of the known reference profile capsule.</p></li>
 <li><p><strong>grid</strong> (<em>str</em>) – Resolution/griding of the spy pull.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>data_pull_c</strong> – A dataframe or series that minimally has columns of “X, …, Y” signals
 requested to be pulled (detailed in items_s_ref input variable) and ‘Date-Time’
 with an index of timestamps.
 [X, …, Y,’Date-Time’].
 This dataframe has all the time series data for the reference profile.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame, pd.Series</p>
 </dd>
 </dl>
@@ -245,7 +255,7 @@ This dataframe has all the time series data for the reference profile.</p>
 desired workbook in the case mps is in continuous mode. In addition each variable’s % contribution to the
 dis-similarity is also pushes as a signal per variable.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>Return_top_x</strong> (<em>int</em>) – Variable to limit number of top found capsules.</p></li>
 <li><p><strong>min_idx_multivar</strong> (<em>numpy.ndarray</em>) – numpy array of three columns
@@ -264,10 +274,10 @@ This dataframe has all the time series data for the analysis/search area.</p></l
 <li><p><strong>grid</strong> (<em>str</em>) – Resolution/griding of the spy pull.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>end</strong> – Indicator for UI to display successful ending.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -280,7 +290,7 @@ This dataframe has all the time series data for the analysis/search area.</p></l
 desired workbook in the case mps is in batch mode. In addition each variable’s % contribution to the dis-similarity
 is also pushes as a signal per variable.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>batch_sim_df</strong> (<em>pd.DataFrame</em>) – A dataframe or series that minimally has columns of
 [‘Similarity’, ‘Date-Time’].
@@ -290,10 +300,10 @@ This has the resulting similarity measure of each defined capsule with the cente
 <li><p><strong>Sheet_index</strong> (<em>int</em>) – Integer detailing the index of the source worksheet.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>end</strong> – Indicator for UI to display successful ending.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -304,13 +314,13 @@ This has the resulting similarity measure of each defined capsule with the cente
 <span class="sig-prename descclassname"><span class="pre">seeq.addons.mps._mps.</span></span><span class="sig-name descname"><span class="pre">save_ref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workbook_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worksheet_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_pull_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">known_cap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mypath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/seeq/addons/mps/_mps.html#save_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.mps._mps.save_ref" title="Permalink to this definition"></a></dt>
 <dd><p>This function saves the reference profile time series data and metadata as a pickle file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>workbook_id</strong> (<em>str</em>) – The Seeq ID of the source workbook</p></li>
 <li><p><strong>worksheet_id</strong> (<em>str</em>) – The Seeq ID of the source worksheet</p></li>
-<li><p><strong>signal_pull_list</strong> (<em>list of str</em>) – List of strings that detail the signal names to describe the reference profile to be saved</p></li>
+<li><p><strong>signal_pull_list</strong> (<em>list</em><em> of </em><em>str</em>) – List of strings that detail the signal names to describe the reference profile to be saved</p></li>
 <li><p><strong>known_cap</strong> (<em>str</em>) – Name (str) of the capsule that defines the reference/s to be saved</p></li>
-<li><p><strong>time_frame</strong> (<em>list of datetime</em>) – Start and end datetimes of the analysis range to searched for the known capsule in the seeq.spy.pull</p></li>
+<li><p><strong>time_frame</strong> (<em>list</em><em> of </em><em>datetime</em>) – Start and end datetimes of the analysis range to searched for the known capsule in the seeq.spy.pull</p></li>
 <li><p><strong>grid</strong> (<em>str</em>) – resolution/griding of the seeq.spy.pull</p></li>
 <li><p><strong>save_name</strong> (<em>str</em>) – name of the pickle file to saved as</p></li>
 <li><p><strong>mypath</strong> – path to folder to save the pickle file in</p></li>
@@ -333,7 +343,7 @@ or maximum found distance). Finally the % of each variable/signal contribution t
 calculated. This function is intended to be applied to continuous process data. Technical reference
 <a class="reference external" href="https://www.cs.unm.edu/~mueen/DTW.pdf">https://www.cs.unm.edu/~mueen/DTW.pdf</a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_pull</strong> (<em>pd.DataFrame</em><em>, </em><em>pd.Series</em>) – A dataframe or series that minimally has columns of “X, …, Y” signals
 requested to be pulled (detailed in items_s_ref input variable) and ‘Date-Time’
@@ -354,14 +364,14 @@ To detail the capsule of the known reference profile capsule.</p></li>
 <li><p><strong>time_distort</strong> (<em>float</em>) – 0 to 1 float to set % of time distortion of the searching window length in the window stepping of the algo.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>found_all_sorted</strong> – numpy array of three columns
 1st = found capsules similarity measurement (float 0 to 1)
 2nd = integer index of each found capsule relative to data_pull
 3rd = integer describing the duration/length of the found capsule (each integer is defined by griding in
 ‘pull_mps_data’)</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
@@ -374,7 +384,7 @@ To detail the capsule of the known reference profile capsule.</p></li>
 area it only measures the distance between two time series datasets for each capsule in the batch condition. This
 function is intended to be applied to batch process data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>batch_cond</strong> (<em>pd.DataFrame</em><em>, </em><em>pd.Series</em>) – pd.DataFrame, pd.Series
 A dataframe or series that minimally has columns of “X, …, Y” conditions
@@ -397,12 +407,12 @@ To detail the capsule of the known reference profile capsule.</p></li>
 <li><p><strong>time_distort</strong> (<em>float</em>) – 0 to 1 float to set % of time distortion of the searching window length in the window stepping of the algo.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>batch_sim_df</strong> – A dataframe or series that minimally has columns of
 [‘Similarity’, ‘Date-Time’].
 This has the resulting similarity measure of each defined capsule with the centered datetime</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
@@ -421,7 +431,7 @@ found distance). Finally the % of each variable/signal contribution to the simil
 This function is intended to be applied to continuous process data.</p>
 <p>Technical reference found &#64; <a class="reference external" href="https://www.cs.unm.edu/~mueen/FastestSimilaritySearch.html">https://www.cs.unm.edu/~mueen/FastestSimilaritySearch.html</a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_pull</strong> (<em>pd.DataFrame</em><em>, </em><em>pd.Series</em>) – A dataframe or series that minimally has columns of “X, …, Y” signals
 requested to be pulled (detailed in items_s_ref input variable) and ‘Date-Time’
@@ -441,14 +451,14 @@ To detail the capsule of the known reference profile capsule.</p></li>
 <li><p><strong>sim</strong> (<em>bool</em>) – Set to return similar or dis-similar results.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>found_all_sorted</strong> – numpy array of three columns
 1st = found capsules similarity measurement (float 0 to 1)
 2nd = integer index of each found capsule relative to data_pull
 3rd = integer describing the duration/length of the found capsule (each integer is defined by griding in
 ‘pull_mps_data’)</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
@@ -462,13 +472,13 @@ computes a % similarity score by comparing against the minimum possible distance
 (largest of the inverse of its self or maximum found distance) and removes overlapping ‘found’ capsules/events from
 most similar to least similar.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_pull</strong> (<em>pd.DataFrame</em><em>, </em><em>pd.Series</em>) – A dataframe or series that minimally has columns of “X, …, Y” signals
 requested to be pulled (detailed in items_s_ref input variable) and ‘Date-Time’
 with an index of timestamps.
 [X, …, Y,’Date-Time’]. This dataframe has all the time series data for the analysis/search area.</p></li>
-<li><p><strong>total_dist</strong> (<em>list of float</em>) – List of distance measurements between the two curves.</p></li>
+<li><p><strong>total_dist</strong> (<em>list</em><em> of </em><em>float</em>) – List of distance measurements between the two curves.</p></li>
 <li><p><strong>window_step</strong> (<em>int</em>) – ize of the window stepping used by the algo.</p></li>
 <li><p><strong>known</strong> (<em>pd.DataFrame</em><em>, </em><em>pd.Series</em>) – A dataframe or series that minimally has columns of “X, …, Y” signals
 requested to be pulled (detailed in items_s_ref input variable) and ‘Date-Time’
@@ -480,7 +490,7 @@ This dataframe has strictly only the time series data for the reference profile 
 <li><p><strong>max</strong> (<em>float</em>) – Max accumulative distance used to scale all other distances measured.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>found_list</strong> (<em>list of int</em>) – Each int in the list is the sorted (highest similarity match 1st) index of each found capsule
 as an integer relative to data_pull.</p></li>

@@ -3,19 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>seeq.addons.mps._mps_sdl_ui &mdash; seeq-mps 0.3.2 documentation</title>
+  <title>seeq.addons.mps._mps_sdl_ui &mdash; seeq-mps 0.3.3 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../../_static/seeq-favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -27,10 +24,9 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="../../../../index.html" class="icon icon-home"> seeq-mps
-            <img src="../../../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.3.2
+                0.3.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -94,7 +90,7 @@
 
 
 <div class="viewcode-block" id="MpsUI"><a class="viewcode-back" href="../../../../user_interface.html#seeq.addons.mps._mps_sdl_ui.MpsUI">[docs]</a><span class="k">class</span> <span class="nc">MpsUI</span><span class="p">(</span><span class="n">ipw</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This Class creates an ipywidget based user interface for the MPS Add-on, it contains the options required to</span>
 <span class="sd">    complete a continuous or batch mode mps analysis. Results are pushed to the workbook the Add-on was launched from</span>
 <span class="sd">    or the specified workbook if running locally.</span>
@@ -319,6 +315,18 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">get_worksheet_data</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">workbook_id</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">worksheet_id</span><span class="p">)</span>
+            <span class="n">nodata_</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">Error_msg</span> <span class="o">=</span> <span class="s2">&quot;Error: Please ensure the analysis worksheet has at least one numerical signal and one &quot;</span> \
+                        <span class="s2">&quot;condition, Or check your version of Seeq server matches the installed version of seeq module &quot;</span>\
+                        <span class="s2">&quot;(spy)&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ipw</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&lt;b&gt;&lt;font color=&#39;red&#39;&gt;&lt;font size=4&gt;</span><span class="si">{</span><span class="n">Error_msg</span><span class="si">}</span><span class="s2">&lt;/b&gt;&quot;</span><span class="p">)]</span>
+
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_list</span><span class="p">)</span>
+
+            <span class="n">nodata_</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">nodata_</span><span class="p">:</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">known_cap_</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">condition_list</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">batch_cap_</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">condition_list</span>
@@ -444,15 +452,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">remove_sig_</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_sig_select</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_sig_</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_sig_select</span><span class="p">)</span>
 
-        <span class="k">except</span><span class="p">:</span>
-            <span class="n">Error_msg</span> <span class="o">=</span> <span class="s2">&quot;Error: Please ensure the analysis worksheet has at least one numerical signal and one &quot;</span> \
-                        <span class="s2">&quot;condition&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">display_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ipw</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;b&gt;&lt;font color=&#39;red&#39;&gt;&lt;font size=4&gt;</span><span class="si">{</span><span class="n">Error_msg</span><span class="si">}</span><span class="s2">&lt;/b&gt;&quot;</span><span class="p">)]</span>
-
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_list</span><span class="p">)</span>
-
-
-
     <span class="c1"># action on click of execute MPS: Pull data to pandas, run MASS, push found conditions back to worksheet</span>
     <span class="k">def</span> <span class="nf">on_button_clicked2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 
@@ -547,7 +546,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_data</span><span class="o">.</span><span class="n">button_style</span> <span class="o">==</span> <span class="s1">&#39;info&#39;</span><span class="p">:</span>
 
             <span class="n">desired_workbook</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">search</span><span class="p">({</span><span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">workbook_id</span><span class="p">},</span>
-                                                                       <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                                                       <span class="n">include_referenced_workbooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                                       <span class="n">include_inventory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                                       <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;catalog&#39;</span>
                                                                        <span class="p">),</span>
                                                   <span class="n">include_referenced_workbooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                                   <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
@@ -627,7 +628,7 @@
 
 <div class="viewcode-block" id="MpsUI.get_worksheet_data"><a class="viewcode-back" href="../../../../user_interface.html#seeq.addons.mps._mps_sdl_ui.MpsUI.get_worksheet_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_worksheet_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">):</span>
 
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function obtains worksheet information used to pre-populate options within the user interface. This</span>
 <span class="sd">        includes lists of conditions and signals, investigation start and end datetime and index of the worksheet.</span>
 
@@ -664,8 +665,8 @@
                                           <span class="p">)</span>
 
         <span class="n">desired_workbook</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">spy_search</span><span class="p">,</span>
-                                              <span class="n">include_referenced_workbooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                              <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                              <span class="n">include_referenced_workbooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_inventory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                              <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;catalog&#39;</span>
                                               <span class="p">)</span>
 
         <span class="c1"># find worksheet index from url</span>
@@ -742,7 +743,8 @@
                                 <span class="p">)</span>
 
         <span class="n">workbook</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">search</span><span class="p">({</span><span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">workbook_id</span><span class="p">},</span>
-                                                           <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+                                                           <span class="n">include_referenced_workbooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_inventory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                           <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;catalog&#39;</span>
                                                            <span class="p">),</span>
                                       <span class="n">include_referenced_workbooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                       <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
