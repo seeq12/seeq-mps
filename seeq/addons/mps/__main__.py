@@ -12,15 +12,8 @@ from .utils import get_datalab_project_id, addon_tool_management
 NB_EXTENSIONS = ['widgetsnbextension', 'plotlywidget', 'ipyvuetify', 'ipyvue']
 DEPLOYMENT_FOLDER = 'deployment'
 MPS_NOTEBOOK = "multivariate_pattern_search_ui.ipynb"
-
-
-def permissions_defaults(permissions_group: list, permissions_users: list):
-    if permissions_group is None:
-        permissions_group = ['Everyone']
-
-    if permissions_users is None:
-        permissions_users = []
-    return permissions_group, permissions_users
+DEFAULT_GROUP = ['Everyone']
+DEFAULT_USERS = []
 
 
 def install_app(sdl_url_, *, sort_key=None, permissions_group: list = None, permissions_users: list = None):
@@ -51,27 +44,27 @@ def install_app(sdl_url_, *, sort_key=None, permissions_group: list = None, perm
     if sort_key is None:
         sort_key = 'm'
 
-    permissions_group, permissions_users = permissions_defaults(permissions_group, permissions_users)
+    permissions_group = permissions_group if permissions_group else DEFAULT_GROUP
+    permissions_users = permissions_users if permissions_users else DEFAULT_USERS
 
     mps_details = {
-        "name": 'Multivariate Pattern Search',
-        "description": "Finds and measures similar events defined across multiple variables",
-        "iconClass": "fa fa-leaf",
-        "targetUrl": f'{sdl_url_}/apps/{DEPLOYMENT_FOLDER}/{MPS_NOTEBOOK}?'
+        "Name": 'Multivariate Pattern Search',
+        "Description": "Finds and measures similar events defined across multiple variables",
+        "Icon": "fa fa-leaf",
+        "Target URL": f'{sdl_url_}/apps/{DEPLOYMENT_FOLDER}/{MPS_NOTEBOOK}?'
                      f'workbookId={{workbookId}}&worksheetId={{worksheetId}}',
-        "linkType": "window",
-        "windowDetails": "toolbar=0,location=0,scrollbars=1,statusbar=0,menubar=0,resizable=1,height=900,width=600",
-        "sortKey": sort_key,
-        "reuseWindow": True,
-        "permissions": {
-            "groups": permissions_group,
-            "users": permissions_users
-        }
+        "Link Type": "window",
+        "Window Details": "toolbar=0,location=0,scrollbars=1,statusbar=0,menubar=0,resizable=1,height=900,width=600",
+        "Sort Key": sort_key,
+        "Reuse Window": True,
+        "Groups": permissions_group,
+        "Users": permissions_users
     }
 
     copy(des_folder=DEPLOYMENT_FOLDER, src_folder='deployment_notebook',
          overwrite_folder=False, overwrite_contents=True)
-    addon_tool_management(mps_details)
+
+    spy.addons.install(mps_details, include_workbook_parameters=True, update_tool=True, update_permissions=True)
 
 
 def install_nbextensions():

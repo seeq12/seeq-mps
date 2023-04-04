@@ -3,19 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>seeq.addons.mps.__main__ &mdash; seeq-mps 0.3.2 documentation</title>
+  <title>seeq.addons.mps.__main__ &mdash; seeq-mps 0.3.3 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../../_static/seeq-favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -27,10 +24,9 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="../../../../index.html" class="icon icon-home"> seeq-mps
-            <img src="../../../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.3.2
+                0.3.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -90,19 +86,12 @@
 <span class="n">NB_EXTENSIONS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;widgetsnbextension&#39;</span><span class="p">,</span> <span class="s1">&#39;plotlywidget&#39;</span><span class="p">,</span> <span class="s1">&#39;ipyvuetify&#39;</span><span class="p">,</span> <span class="s1">&#39;ipyvue&#39;</span><span class="p">]</span>
 <span class="n">DEPLOYMENT_FOLDER</span> <span class="o">=</span> <span class="s1">&#39;deployment&#39;</span>
 <span class="n">MPS_NOTEBOOK</span> <span class="o">=</span> <span class="s2">&quot;multivariate_pattern_search_ui.ipynb&quot;</span>
-
-
-<span class="k">def</span> <span class="nf">permissions_defaults</span><span class="p">(</span><span class="n">permissions_group</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">permissions_users</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">permissions_group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">permissions_group</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Everyone&#39;</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="n">permissions_users</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">permissions_users</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">return</span> <span class="n">permissions_group</span><span class="p">,</span> <span class="n">permissions_users</span>
+<span class="n">DEFAULT_GROUP</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Everyone&#39;</span><span class="p">]</span>
+<span class="n">DEFAULT_USERS</span> <span class="o">=</span> <span class="p">[]</span>
 
 
 <div class="viewcode-block" id="install_app"><a class="viewcode-back" href="../../../../add_on_installation.html#seeq.addons.mps.__main__.install_app">[docs]</a><span class="k">def</span> <span class="nf">install_app</span><span class="p">(</span><span class="n">sdl_url_</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sort_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">permissions_group</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">permissions_users</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Installs seeq-mps as an Add-on Tool in Seeq Workbench</span>
 
 <span class="sd">    Parameters</span>
@@ -129,27 +118,27 @@
     <span class="k">if</span> <span class="n">sort_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sort_key</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
 
-    <span class="n">permissions_group</span><span class="p">,</span> <span class="n">permissions_users</span> <span class="o">=</span> <span class="n">permissions_defaults</span><span class="p">(</span><span class="n">permissions_group</span><span class="p">,</span> <span class="n">permissions_users</span><span class="p">)</span>
+    <span class="n">permissions_group</span> <span class="o">=</span> <span class="n">permissions_group</span> <span class="k">if</span> <span class="n">permissions_group</span> <span class="k">else</span> <span class="n">DEFAULT_GROUP</span>
+    <span class="n">permissions_users</span> <span class="o">=</span> <span class="n">permissions_users</span> <span class="k">if</span> <span class="n">permissions_users</span> <span class="k">else</span> <span class="n">DEFAULT_USERS</span>
 
     <span class="n">mps_details</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s1">&#39;Multivariate Pattern Search&#39;</span><span class="p">,</span>
-        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Finds and measures similar events defined across multiple variables&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;iconClass&quot;</span><span class="p">:</span> <span class="s2">&quot;fa fa-leaf&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;targetUrl&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sdl_url_</span><span class="si">}</span><span class="s1">/apps/</span><span class="si">{</span><span class="n">DEPLOYMENT_FOLDER</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">MPS_NOTEBOOK</span><span class="si">}</span><span class="s1">?&#39;</span>
+        <span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="s1">&#39;Multivariate Pattern Search&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Description&quot;</span><span class="p">:</span> <span class="s2">&quot;Finds and measures similar events defined across multiple variables&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Icon&quot;</span><span class="p">:</span> <span class="s2">&quot;fa fa-leaf&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Target URL&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sdl_url_</span><span class="si">}</span><span class="s1">/apps/</span><span class="si">{</span><span class="n">DEPLOYMENT_FOLDER</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">MPS_NOTEBOOK</span><span class="si">}</span><span class="s1">?&#39;</span>
                      <span class="sa">f</span><span class="s1">&#39;workbookId=</span><span class="se">{{</span><span class="s1">workbookId</span><span class="se">}}</span><span class="s1">&amp;worksheetId=</span><span class="se">{{</span><span class="s1">worksheetId</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">,</span>
-        <span class="s2">&quot;linkType&quot;</span><span class="p">:</span> <span class="s2">&quot;window&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;windowDetails&quot;</span><span class="p">:</span> <span class="s2">&quot;toolbar=0,location=0,scrollbars=1,statusbar=0,menubar=0,resizable=1,height=900,width=600&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sortKey&quot;</span><span class="p">:</span> <span class="n">sort_key</span><span class="p">,</span>
-        <span class="s2">&quot;reuseWindow&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="n">permissions_group</span><span class="p">,</span>
-            <span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="n">permissions_users</span>
-        <span class="p">}</span>
+        <span class="s2">&quot;Link Type&quot;</span><span class="p">:</span> <span class="s2">&quot;window&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Window Details&quot;</span><span class="p">:</span> <span class="s2">&quot;toolbar=0,location=0,scrollbars=1,statusbar=0,menubar=0,resizable=1,height=900,width=600&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Sort Key&quot;</span><span class="p">:</span> <span class="n">sort_key</span><span class="p">,</span>
+        <span class="s2">&quot;Reuse Window&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;Groups&quot;</span><span class="p">:</span> <span class="n">permissions_group</span><span class="p">,</span>
+        <span class="s2">&quot;Users&quot;</span><span class="p">:</span> <span class="n">permissions_users</span>
     <span class="p">}</span>
 
     <span class="n">copy</span><span class="p">(</span><span class="n">des_folder</span><span class="o">=</span><span class="n">DEPLOYMENT_FOLDER</span><span class="p">,</span> <span class="n">src_folder</span><span class="o">=</span><span class="s1">&#39;deployment_notebook&#39;</span><span class="p">,</span>
          <span class="n">overwrite_folder</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite_contents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">addon_tool_management</span><span class="p">(</span><span class="n">mps_details</span><span class="p">)</span></div>
+
+    <span class="n">spy</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="n">mps_details</span><span class="p">,</span> <span class="n">include_workbook_parameters</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">update_tool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">update_permissions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">install_nbextensions</span><span class="p">():</span>
@@ -161,7 +150,7 @@
 
 
 <div class="viewcode-block" id="cli_interface"><a class="viewcode-back" href="../../../../add_on_installation.html#seeq.addons.mps.__main__.cli_interface">[docs]</a><span class="k">def</span> <span class="nf">cli_interface</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; Installs MPS as a Seeq Add-on Tool &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Installs MPS as a Seeq Add-on Tool &quot;&quot;&quot;</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Install MPS as a Seeq Add-on Tool&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--nbextensions_only&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Only installs the nbextensions without installing or updating the Add-on Tools&#39;</span>
