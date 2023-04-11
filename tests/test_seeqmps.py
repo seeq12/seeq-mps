@@ -96,4 +96,4 @@ def test_cts_calc_dtw():
 
     file_2.close()
 
-    assert np.allclose(min_idx_multivar_test, min_idx_multivar, atol=0.5)
+    assert np.allclose(min_idx_multivar_test, min_idx_multivar, atol=0.1)
