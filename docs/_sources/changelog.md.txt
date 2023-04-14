@@ -1,5 +1,9 @@
 # Changelog
 
+v0.3.4
+---
+Dtw bugfix, install bugfix for future SDL upgrades and pytest update
+
 v0.3.3
 ---
 Install bugfix and improvement
