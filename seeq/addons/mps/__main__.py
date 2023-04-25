@@ -9,7 +9,7 @@ from ._copy import copy
 from .utils import sanitize_sdl_url
 from .utils import get_datalab_project_id, addon_tool_management
 
-NB_EXTENSIONS = ['widgetsnbextension', 'plotlywidget', 'ipyvuetify', 'ipyvue']
+NB_EXTENSIONS = ['widgetsnbextension', 'ipyvuetify', 'ipyvue']
 DEPLOYMENT_FOLDER = 'deployment'
 MPS_NOTEBOOK = "multivariate_pattern_search_ui.ipynb"
 DEFAULT_GROUP = ['Everyone']
