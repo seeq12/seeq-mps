@@ -4,3 +4,4 @@
 /dist
 /build
 /seeq_mps.egg-info
+*.pyc
