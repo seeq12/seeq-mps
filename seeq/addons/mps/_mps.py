@@ -217,6 +217,7 @@ def pull_mps_data(workbook_id, worksheet_id, signal_pull_list, items_s_ref, data
     items_s = items_s[items_s['Name'].isin(signal_pull_list)]
 
     data_pull = spy.pull(items_s, start=time_frame[0], end=time_frame[1], quiet=True, grid=grid)
+
     data_pull['Date-Time'] = pd.to_datetime(data_pull.index)
     data_pull = data_pull.dropna()
 
@@ -853,7 +854,7 @@ def seeq_mps_dtw_batch(batch_cond, data_pull, data_pull_c, data_pull_known, norm
     return batch_sim_df
 
 
-def push_mps_results_batch(batch_sim_df, workbook_id, condition_name, Sheet_index):
+def push_mps_results_batch(batch_sim_df, workbook_id,condition_name, Sheet_index, scheduled, scheduled_ws_ID):
     """
     This function pushes the % similarity score as a % dis-similarity time series signal to a new worksheet within the
     desired workbook in the case mps is in batch mode. In addition each variable's % contribution to the dis-similarity
@@ -869,14 +870,19 @@ def push_mps_results_batch(batch_sim_df, workbook_id, condition_name, Sheet_inde
         The Seeq ID of the source workbook
     condition_name: str
         Name of condition to leverage in the pushed item names.
-    Sheet_index: int
+    sheet_index: int
         Integer detailing the index of the source worksheet.
-
+    scheduled: bool
+        True or False if this is a push from a scheduled job
+    scheduled_ws_ID: str
+       The Seeq ID of the source workbook if it is a scheduled job
 
     Returns
     -------
     end: bool
         Indicator for UI to display successful ending.
+    worksheet_name: str
+        Name of pushed worksheet 
     """
 
     batch_sim_df.rename(columns={"Similarity": condition_name + "_Dissimilarity_measure"}, inplace=True)
@@ -897,39 +903,78 @@ def push_mps_results_batch(batch_sim_df, workbook_id, condition_name, Sheet_inde
 
     worksheet_og = workbook.worksheets[Sheet_index]
     current_display_items = worksheet_og.display_items
-    worksheet_name = "MPS results " + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-    # push similarity signal
-    push_result_2 = spy.push(data=batch_sim_df,
-                             workbook=workbook_id,
-                             worksheet=worksheet_name,
-                             quiet=True
-                             )
 
-    # push worksheet back in after overwrite
-    new_display_items = pd.concat([current_display_items, push_result_2], axis=0, sort=True)
-    lane_ = current_display_items[current_display_items['Samples Display'] == 'Line']['Lane'].max()
+    if scheduled:
+        worksheet_name = scheduled_ws_ID
+    else:
+        worksheet_name = "MPS results " + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
-    workbook = spy.workbooks.pull(wb_id,
-                                  include_referenced_workbooks=False, include_inventory=False,
-                                  quiet=True, errors='catalog'
-                                  )[0]
+    if scheduled:
 
-    lane_count = 1
-    for name in batch_sim_df.columns:
-        i = new_display_items.loc[new_display_items['Name'] == name].index[0]
-        new_display_items["Samples Display"].loc[i] = "Bars"
-        new_display_items["Line Width"].loc[i] = 40
-        new_display_items["Lane"].loc[i] = lane_ + lane_count
-        lane_count += 1
+        push_result_2 = spy.push(data=batch_sim_df,
+                                workbook=workbook_id,
+                                worksheet=worksheet_name,
+                                quiet=True
+                                )
 
-    workbook.worksheets[worksheet_name].display_items = new_display_items
-    workbook.worksheets[worksheet_name].display_range = worksheet_og.display_range
+        # push worksheet back in after overwrite
+        new_display_items = pd.concat([current_display_items, push_result_2], axis=0, sort=True)
+        lane_ = current_display_items[current_display_items['Samples Display'] == 'Line']['Lane'].max()
 
-    spy.workbooks.push(workbook, quiet=True)
+        workbook = spy.workbooks.pull(wb_id,
+                                    include_referenced_workbooks=False, include_inventory=False,
+                                    quiet=True, errors='catalog'
+                                    )[0]
 
-    push_result_2["Value Unit Of Measure"] = "%"
-    push_result_2["Maximum Interpolation"] = "1 sec"
-    spy.push(metadata=push_result_2, quiet=True)
+        lane_count = 1
+        for name in batch_sim_df.columns:
+            i = new_display_items.loc[new_display_items['Name'] == name].index[0]
+            new_display_items["Samples Display"].loc[i] = "Bars"
+            new_display_items["Line Width"].loc[i] = 40
+            new_display_items["Lane"].loc[i] = lane_ + lane_count
+            lane_count += 1
+
+        workbook.worksheets[worksheet_name].display_items = new_display_items
+        workbook.worksheets[worksheet_name].display_range = worksheet_og.display_range
+
+        spy.workbooks.push(workbook, quiet=True)
+
+        push_result_2["Value Unit Of Measure"] = "%"
+        push_result_2["Maximum Interpolation"] = "1 sec"
+        spy.push(metadata=push_result_2, quiet=True)
+
+    else:
+        push_result_2 = spy.push(data=batch_sim_df,
+                                workbook=workbook_id,
+                                worksheet=worksheet_name,
+                                quiet=True
+                                )
+
+        # push worksheet back in after overwrite
+        new_display_items = pd.concat([current_display_items, push_result_2], axis=0, sort=True)
+        lane_ = current_display_items[current_display_items['Samples Display'] == 'Line']['Lane'].max()
+
+        workbook = spy.workbooks.pull(wb_id,
+                                    include_referenced_workbooks=False, include_inventory=False,
+                                    quiet=True, errors='catalog'
+                                    )[0]
+
+        lane_count = 1
+        for name in batch_sim_df.columns:
+            i = new_display_items.loc[new_display_items['Name'] == name].index[0]
+            new_display_items["Samples Display"].loc[i] = "Bars"
+            new_display_items["Line Width"].loc[i] = 40
+            new_display_items["Lane"].loc[i] = lane_ + lane_count
+            lane_count += 1
+
+        workbook.worksheets[worksheet_name].display_items = new_display_items
+        workbook.worksheets[worksheet_name].display_range = worksheet_og.display_range
+
+        spy.workbooks.push(workbook, quiet=True)
+
+        push_result_2["Value Unit Of Measure"] = "%"
+        push_result_2["Maximum Interpolation"] = "1 sec"
+        spy.push(metadata=push_result_2, quiet=True)
 
     end = True
 
@@ -937,7 +982,8 @@ def push_mps_results_batch(batch_sim_df, workbook_id, condition_name, Sheet_inde
 
 
 def push_mps_results(
-        Return_top_x, min_idx_multivar, data_pull, workbook_id, condition_name, Sheet_index, grid):
+        Return_top_x, min_idx_multivar, data_pull, workbook_id, condition_name, Sheet_index, grid, scheduled,
+        scheduled_ws_ID, og_start):
     """
     This function pushes the % similarity score as a % dis-similarity time series signal to a new worksheet within the
     desired workbook in the case mps is in continuous mode. In addition each variable's % contribution to the
@@ -967,6 +1013,12 @@ def push_mps_results(
         Integer detailing the index of the source worksheet.
     grid: str
         Resolution/griding of the spy pull.
+    scheduled: bool
+        True or False if this is a push from a scheduled job
+    scheduled_ws_ID: str
+       The Seeq ID of the source workbook if it is a scheduled job
+    og_start: datetime
+        Start datetime of the original analysis range
 
 
     Returns
@@ -974,7 +1026,7 @@ def push_mps_results(
     end: bool
         Indicator for UI to display successful ending.
     """
-    worksheet_name = "MPS results " + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+
     grid_ = {'1sec': 1, '10sec': 10, '30sec': 30, '1min': 60, '5min': 300, '10min': 600, '30min': 1800}[grid]
 
     # if less than requested top results
@@ -1017,18 +1069,10 @@ def push_mps_results(
         current_display_items = worksheet_og.display_items
         lane_ = current_display_items[current_display_items['Samples Display'] == 'Line']['Lane'].max()
 
-        # push found conditions
-        push_cond.reset_index(drop=True, inplace=True)
-
-        push_result = spy.push(data=push_cond, workbook=workbook_id,
-                               worksheet=worksheet_name,
-                               metadata=pd.DataFrame([{
-                                   'Name': condition_name,
-                                   'Type': 'Condition',
-                                   'Maximum Duration': '20d'
-                               }]),
-                               quiet=True
-                               )
+        if scheduled:
+            worksheet_name = scheduled_ws_ID
+        else:
+            worksheet_name = "MPS results " + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
         # create dataframe to push similarity signal
         push_sig = pd.DataFrame(min_idx_multivar).drop([1, 2, 3, 4], 1)
@@ -1053,38 +1097,142 @@ def push_mps_results(
         # change to dissimilarity
         push_sig[name_] = 100 - push_sig[name_]
 
-        # push similarity signal
-        push_result_2 = spy.push(data=push_sig,
-                                 workbook=workbook_id,
-                                 worksheet=worksheet_name,
-                                 quiet=True
-                                 )
+                # filter out duplicates for real time application
+        if scheduled:
 
-        push_result_2["Value Unit Of Measure"] = "%"
-        push_result_2["Maximum Interpolation"] = "1 sec"
-        spy.push(metadata=push_result_2, quiet=True)
+            i = [i for i, s in enumerate(workbook.worksheets) if scheduled_ws_ID in str(s)][0]
+            worksheet_r = workbook.worksheets[i]
+            existing_display_items = worksheet_r.display_items
+            existing_found_c = existing_display_items[existing_display_items.Type == 'Condition']
+            existing_found_c = existing_found_c[existing_found_c['Name'] == condition_name]
+            existing_found_c_df = spy.pull(existing_found_c, start=og_start, end=data_pull.index[-1],
+                                           quiet=True)
+            found_duplicates = []
+            print(existing_found_c_df)
+            print(push_cond)
+            for c in push_cond.index:
+                for c2 in existing_found_c_df.index:
+                    if push_cond['Capsule Start'][c] >= existing_found_c_df['Capsule Start'][c2]:
+                        if push_cond['Capsule Start'][c] <= existing_found_c_df['Capsule End'][c2]:
+                            found_duplicates.append(c)
+                            break
+                    if push_cond['Capsule End'][c] >= existing_found_c_df['Capsule Start'][c2]:
+                        if push_cond['Capsule End'][c] <= existing_found_c_df['Capsule End'][c2]:
+                            if c not in found_duplicates:
+                                found_duplicates.append(c)
+                            break
+            print(found_duplicates)
+            found_duplicates2 = []
+            for c in push_sig.index:
+                for c2 in existing_found_c_df.index:
+                    if c >= existing_found_c_df['Capsule Start'][c2]:
+                        if c <= existing_found_c_df['Capsule End'][c2]:
+                            found_duplicates2.append(c)
+                            break
+            print(existing_found_c_df)
+            print(push_sig)
+            print(found_duplicates2)
 
-        # push worksheet back in after overwrite
-        new_display_items = pd.concat([current_display_items, push_result, push_result_2], axis=0, sort=True)
+            if len(found_duplicates) != 0:
+                push_cond_final = push_cond.drop(push_cond.index[found_duplicates])
+            else:
+                push_cond_final = push_cond
 
-        workbook = spy.workbooks.pull(wb_id,
-                                      include_referenced_workbooks=False, include_inventory=False,
-                                      quiet=True, errors='catalog'
-                                      )[0]
+            push_cond_final = push_cond_final.reset_index(drop=True)
+            print(push_cond_final)
+            if push_cond_final.shape[0] > 0:
+                # push found conditions
+                push_result = spy.push(data=push_cond_final, workbook=workbook_id,
+                                       worksheet=worksheet_name,
+                                       metadata=pd.DataFrame([{
+                                           'Name': condition_name,
+                                           'Type': 'Condition',
+                                           'Maximum Duration': '20d'
+                                       }]),
+                                       quiet=True
+                                       )
 
-        lane_count = 1
-        for name in push_sig.columns:
-            i = new_display_items.loc[new_display_items['Name'] == name].index[0]
-            new_display_items["Samples Display"].loc[i] = "Bars"
-            new_display_items["Line Width"].loc[i] = 40
-            new_display_items["Lane"].loc[i] = lane_ + lane_count
-            lane_count += 1
+                for ii in found_duplicates2:
+                    push_sig.drop(ii, inplace=True)
+                print(push_sig)
+                push_result_2 = spy.push(data=push_sig,
+                                         workbook=workbook_id,
+                                         worksheet=worksheet_name,
+                                         quiet=True
+                                         )
+                push_result_2["Value Unit Of Measure"] = "%"
+                push_result_2["Maximum Interpolation"] = "1 sec"
+                spy.push(metadata=push_result_2, quiet=True)
 
-        new_display_items.reset_index(drop=True, inplace=True)
+                # push worksheet back in after overwrite
+                new_display_items = pd.concat([current_display_items, push_result, push_result_2], axis=0, sort=True)
 
-        workbook.worksheets[worksheet_name].display_items = new_display_items
-        workbook.worksheets[worksheet_name].display_range = worksheet_og.display_range
-        spy.workbooks.push(workbook, quiet=True)
+                workbook = spy.workbooks.pull(wb_id,
+                                              include_referenced_workbooks=False,
+                                              quiet=True, errors='catalog'
+                                              )[0]
+
+                lane_count = 1
+                for name in push_sig.columns:
+                    i = new_display_items.loc[new_display_items['Name'] == name].index[0]
+                    new_display_items["Samples Display"].loc[i] = "Bars"
+                    new_display_items["Line Width"].loc[i] = 40
+                    new_display_items["Lane"].loc[i] = lane_ + lane_count
+                    lane_count += 1
+
+                new_display_items.reset_index(drop=True, inplace=True)
+                sheet_list = workbook.worksheets
+                sheet_index_2 = [i for i, s in enumerate(sheet_list) if scheduled_ws_ID in str(s)][0]
+                workbook.worksheets[sheet_index_2].display_items = new_display_items
+                workbook.worksheets[sheet_index_2].display_range = worksheet_og.display_range
+                spy.workbooks.push(workbook, quiet=True)
+
+        else:
+            push_cond.reset_index(drop=True)
+
+            # push found conditions
+            push_result = spy.push(data=push_cond, workbook=workbook_id,
+                                   worksheet=worksheet_name,
+                                   metadata=pd.DataFrame([{
+                                       'Name': condition_name,
+                                       'Type': 'Condition',
+                                       'Maximum Duration': '20d'
+                                   }]),
+                                   quiet=True
+                                   )
+
+            # push similarity signal
+            push_result_2 = spy.push(data=push_sig,
+                                     workbook=workbook_id,
+                                     worksheet=worksheet_name,
+                                     quiet=True
+                                     )
+
+            push_result_2["Value Unit Of Measure"] = "%"
+            push_result_2["Maximum Interpolation"] = "1 sec"
+            spy.push(metadata=push_result_2, quiet=True)
+
+            # push worksheet back in after overwrite
+            new_display_items = pd.concat([current_display_items, push_result, push_result_2], axis=0, sort=True)
+
+            workbook = spy.workbooks.pull(wb_id,
+                                          include_referenced_workbooks=False,
+                                          quiet=True, errors='catalog'
+                                          )[0]
+
+            lane_count = 1
+            for name in push_sig.columns:
+                i = new_display_items.loc[new_display_items['Name'] == name].index[0]
+                new_display_items["Samples Display"].loc[i] = "Bars"
+                new_display_items["Line Width"].loc[i] = 40
+                new_display_items["Lane"].loc[i] = lane_ + lane_count
+                lane_count += 1
+
+            new_display_items.reset_index(drop=True, inplace=True)
+
+            workbook.worksheets[worksheet_name].display_items = new_display_items
+            workbook.worksheets[worksheet_name].display_range = worksheet_og.display_range
+            spy.workbooks.push(workbook, quiet=True)
 
         end = True
 
