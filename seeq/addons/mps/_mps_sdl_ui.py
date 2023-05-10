@@ -1,8 +1,11 @@
 from IPython.display import clear_output
 from IPython.display import display
+
 from datetime import datetime, timedelta
 import pytz
 import ipywidgets as ipw
+
+import ipyvuetify as v
 
 import pandas as pd
 
@@ -13,6 +16,7 @@ from os import listdir, path, makedirs
 from os.path import isfile, join
 
 from . import _mps as mps
+from . import _job_scheduling
 
 
 class MpsUI(ipw.VBox):
@@ -347,6 +351,22 @@ class MpsUI(ipw.VBox):
             self.cont_data = ipw.Button(description="Continuous")
             self.space_ = ipw.HBox([ipw.Label(value="                    ")])
 
+            # jobs -----------------
+            datalab_url = spy.utils.get_data_lab_project_url()
+
+            self.realtime_notebook_url = f'{datalab_url}/notebooks/deployment/multivariate_pattern_search_ui_jobs.ipynb'
+            # self.realtime_notebook_url =f'{datalab_url}/deployment/multivariate_pattern_search_ui_jobs.ipynb'
+
+            jobs_table_columns = {
+                'Job Name': 'job_name',
+                'User': 'user',
+                'Schedule': 'Schedule'
+            }
+            self._jobs_table = _job_scheduling.JobsTable(self.realtime_notebook_url, jobs_table_columns)
+
+            # add a callback to update our jobs table when we submit a new job...
+            #self._new_jobs_ui.add_submit_callback(_job_scheduling._jobs_table.retrieve_jobs_from_spy)
+
             self.bat_con_select = ipw.VBox([
                                     ipw.HBox([self.batch_data, self.cont_data]),
                                     self.space_
@@ -365,7 +385,17 @@ class MpsUI(ipw.VBox):
                                  self.space_, self.button
                                  ]
 
-            super().__init__(self.display_list)
+            self._tab1 = ipw.VBox(children=[v.Card(outlined=True, children=[self.display_list])])
+
+            self._tab2 = ipw.VBox(children=[v.Card(outlined=True, children=[self._jobs_table])])
+
+            self.tab = ipw.Tab(children=[self.display_list, self._tab2])
+            self.tab.set_title(0, 'Setup and Run')
+            self.tab.set_title(1, 'Realtime deployment')
+
+            self.tab_all = [self.tab]
+
+            super().__init__(self.tab_all)
 
             self.return_all_.on_click(self.return_all)
             self.save_button_.on_click(self.save)
@@ -551,6 +581,32 @@ class MpsUI(ipw.VBox):
 
             self.button.button_style = 'success'
             self.button.description = "Success!"
+        
+        #add in scheduling tab
+        constant_params = {'workbook_id': [self.workbook_id], 'worksheet_id': [self.worksheet_id],
+                           'load_name': [self.pick_load_file_.value], 'signal_pull_list': [signal_pull_list],
+                           'time_frame': [time_frame], 'griding': [griding], 'known_cap': [known_cap],
+                           'mode': [mode_], 'similarity': [similarity], 'return_top_x': [return_top_x],
+                           'time_distort': [time_distort], 'found_cap_name': [found_cap_name],
+                           'wb_id_scheduled': [wb_id_scheduled], 'batch_cond_name': [batch_cond_name]
+                           }
+
+        _new_jobs_ui = _job_scheduling.SchedulingUI(self.workbook_id, self.worksheet_id,
+                                                    self.realtime_notebook_url, constant_params)
+
+        _tab2b = ipw.VBox(children=[v.Card(outlined=True, children=[self._jobs_table]),
+                                    v.Card(outlined=True, children=[_new_jobs_ui])
+                                    ]
+                          )
+        self.tab = ipw.Tab(children=[self.display_list, self._tab2b])
+        self.tab.set_title(0, 'Setup and Run')
+        self.tab.set_title(1, 'Realtime deployment')
+
+        self.tab_all = [self.tab]
+
+        clear_output()
+
+        display(ipw.VBox(self.display_list))
 
     def get_worksheet_data(self, workbook_id, worksheet_id):
 
