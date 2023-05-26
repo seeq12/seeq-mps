@@ -5,6 +5,7 @@
     "version": "Input version here",
     "license": "Apache-2.0 license",
     "icon": "fa fa-leaf",
+    "tags": {"maintainer":"Seeq"},
     "previews": [
       "additional_content/mpsworkflowexample.png"
     ],
