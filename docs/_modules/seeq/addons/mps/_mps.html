@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>seeq.addons.mps._mps &mdash; seeq-mps 0.3.4 documentation</title>
+  <title>seeq.addons.mps._mps &mdash; seeq-mps 0.3.5 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
             <a href="../../../../index.html" class="icon icon-home"> seeq-mps
           </a>
               <div class="version">
-                0.3.4
+                0.3.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -677,7 +677,7 @@
         <span class="k">for</span> <span class="n">time_distort_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">time_distort</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">search_size_stretch</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">known</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">time_distort_</span> <span class="o">/</span> <span class="mi">100</span><span class="p">))</span>
             <span class="c1"># size of steps taken during dtw distance measurement across the dataset</span>
-            <span class="n">window_step</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#round(len(known) * 0.05)</span>
+            <span class="n">window_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">known</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.05</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">window_step</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">window_step</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
@@ -772,7 +772,7 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
             <span class="n">loc_c</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">loc_i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
-            <span class="n">found_all_sorted</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="n">loc_c</span><span class="p">][</span><span class="n">loc_i</span> <span class="o">/</span> <span class="n">window_step</span><span class="p">]</span>
+            <span class="n">found_all_sorted</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="n">loc_c</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">loc_i</span> <span class="o">/</span> <span class="n">window_step</span><span class="p">)]</span>
 
     <span class="n">found_all_sorted</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>

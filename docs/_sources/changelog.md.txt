@@ -1,5 +1,9 @@
 # Changelog
 
+v0.3.5
+---
+Dtw improvments, fucntions to package MPS for use in addon manager
+
 v0.3.4
 ---
 Dtw bugfix, install bugfix for future SDL upgrades and pytest update
