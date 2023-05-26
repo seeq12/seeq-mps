@@ -4,7 +4,7 @@
     "description": "Finds and measures similar events defined across multiple variables",
     "version": "Input version here",
     "license": "Apache-2.0 license",
-    "icon": "fa fa-th",
+    "icon": "fa fa-leaf",
     "previews": [
       "additional_content/mpsworkflowexample.png"
     ],
