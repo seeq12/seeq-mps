@@ -138,7 +138,7 @@ if args.distribute:
         api_key = os.getenv('JFROG_API_KEY')
         for artifact in addon_manager_artifacts:
             _, file = os.path.split(artifact)
-            path = ArtifactoryPath(f"https://seeq.jfrog.io/artifactory/seeq-add-ons-prod-local/mps/{file}",
+            path = ArtifactoryPath(f"https://seeq.jfrog.io/artifactory/seeq-add-ons-prod-local/MPS/{file}",
                                    apikey=api_key)
             try:
                 path.deploy_file(artifact)
