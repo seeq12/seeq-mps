@@ -603,7 +603,7 @@ def seeq_mps_dtw(data_pull, data_pull_c, data_pull_known, threshold, normalise, 
         for time_distort_ in range(0, 1 + time_distort, 1):
             search_size_stretch = int(known.shape[0] * (time_distort_ / 100))
             # size of steps taken during dtw distance measurement across the dataset
-            window_step = 1 #round(len(known) * 0.05)
+            window_step = int(round(len(known) * 0.05))
             if window_step <= 0:
                 window_step = 1
             for var in data_pull.columns[:-1]:
@@ -698,7 +698,7 @@ def seeq_mps_dtw(data_pull, data_pull_c, data_pull_known, threshold, normalise, 
         for i in found_all_sorted.index:
             loc_c = str(var) + '_' + str(found_all_sorted[3][i])[0] + str(found_all_sorted[4][i])[0]
             loc_i = int(found_all_sorted[1][i])
-            found_all_sorted[len(found_all_sorted.columns) - 1][i] = meta_data[loc_c][loc_i / window_step]
+            found_all_sorted[len(found_all_sorted.columns) - 1][i] = meta_data[loc_c][int(loc_i / window_step)]
 
     found_all_sorted['sum'] = found_all_sorted.loc[:, 5:].sum(axis=1)
     if found_all_sorted.shape[0] == 0:

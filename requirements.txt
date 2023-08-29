@@ -15,3 +15,4 @@ wheel~=0.38.1
 packaging~=21.0
 pytz~=2021.3
 setuptools>=65.5.1
+dohq-artifactory==0.8.1
