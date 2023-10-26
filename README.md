@@ -1,6 +1,6 @@
 [![Build Status](https://teamcity.seeq-labs.com/app/rest/builds/buildType:(id:AppliedResearch_mps)/statusIcon)](https://github.com/seeq12/seeq-mps/)
 
-[![N|Solid](https://www.seeq.com/sites/default/files/seeq-content/seeq-logo-blue-web-33h.svg)](https://www.seeq.com)
+[![N|Solid](https://support.seeq.com/__assets-afb914a3-20be-451d-8157-92db51387860/image/seeq_logo.png)](https://www.seeq.com)
 
 [![N|Scheme](https://seeq12.github.io/seeq-mps/_static/mpsworkflowexample.png)](https://seeq12.github.io/seeq-mps/index.html)
 

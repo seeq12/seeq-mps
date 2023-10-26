@@ -3,9 +3,10 @@
     "name": "Multivariate Pattern Search",
     "description": "Finds and measures similar events defined across multiple variables",
     "version": "Input version here",
+    "maintainer":"Seeq Corporation https://seeq.com/",
     "license": "Apache-2.0 license",
     "icon": "fa fa-leaf",
-    "tags": {"maintainer":"Seeq"},
+    "tags": {"documentation":"Documentation website here https://seeq12.github.io/seeq-mps/introduction.html" },
     "previews": [
       "additional_content/mpsworkflowexample.png"
     ],
@@ -14,6 +15,7 @@
         "name": "Multivariate Pattern Search",
         "description": "Finds and measures similar events defined across multiple variables",
         "identifier": "com.seeq.addon.mps.mps",
+        "known_aliases": ["MPS", "Multivariate Pattern Search"],
         "type": "AddOnTool",
         "path": "data-lab-functions",
         "notebook_file_path": "multivariate_pattern_search_ui.ipynb",
