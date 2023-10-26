@@ -30,6 +30,9 @@ class MpsUI(ipw.VBox):
         self.workbook_id = workbook_id
         self.worksheet_id = worksheet_id
 
+        # Set the compatibility option so that you maximize the chance that SPy will remain compatible with your notebook/script
+        spy.options.compatibility = 187.5
+
         max_name = 0
 
         # get name to push

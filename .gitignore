@@ -4,3 +4,5 @@
 /dist
 /build
 /seeq_mps.egg-info
+/.vscode
+*.pyc
