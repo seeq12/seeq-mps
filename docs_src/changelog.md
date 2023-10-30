@@ -1,4 +1,8 @@
 # Changelog
+v0.3.7
+---
+Seeq add-on manager package updates
+
 v0.3.6
 ---
 Seeq SPy compatibility update and minor add-on pacakge tweaks
