@@ -475,9 +475,7 @@ class MpsUI(ipw.VBox):
         if self.batch_data.button_style == 'info':
 
             desired_workbook = spy.workbooks.pull(spy.workbooks.search({'ID': self.workbook_id},
-                                                                       include_referenced_workbooks=False,
-                                                                       include_inventory=False,
-                                                                       quiet=True, errors='catalog'
+                                                                       quiet=True
                                                                        ),
                                                   include_referenced_workbooks=False,
                                                   quiet=True
@@ -672,8 +670,7 @@ class MpsUI(ipw.VBox):
                                 )
 
         workbook = spy.workbooks.pull(spy.workbooks.search({'ID': self.workbook_id},
-                                                           include_referenced_workbooks=False, include_inventory=False,
-                                                           quiet=True, errors='catalog'
+                                                           quiet=True
                                                            ),
                                       include_referenced_workbooks=False,
                                       quiet=True
