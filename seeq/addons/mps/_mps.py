@@ -121,7 +121,6 @@ def load_ref(load_name, mypath):
     with open(file_name, 'rb') as file_:
         items_s_ref = pickle.load(file_)
         data_pull_known = pickle.load(file_)
-
     return items_s_ref, data_pull_known
 
 
@@ -159,6 +158,7 @@ def pull_ref_data(items_s_ref, data_pull_known, grid):
     end_all = data_pull_known['Capsule End'].iloc[-1]
 
     data_pull_c = spy.pull(items_s_ref, start=start_all, end=end_all, quiet=True, grid=grid)
+    
     data_pull_c['Date-Time'] = pd.to_datetime(data_pull_c.index)
     data_pull_c = data_pull_c.dropna()
 
@@ -219,7 +219,6 @@ def pull_mps_data(workbook_id, worksheet_id, signal_pull_list, items_s_ref, data
     data_pull = spy.pull(items_s, start=time_frame[0], end=time_frame[1], quiet=True, grid=grid)
     data_pull['Date-Time'] = pd.to_datetime(data_pull.index)
     data_pull = data_pull.dropna()
-
     data_pull_c = pull_ref_data(items_s_ref, data_pull_known, grid)
 
     # return signal data, known capsule start and send time, length of known window
@@ -1000,7 +999,7 @@ def push_mps_results(
                 seconds=known_length_list[i] * grid_)
 
         push_cond = push_cond.reset_index(drop=True)
-        push_cond['Date-Time'] = pd.to_datetime(push_cond.index)
+
         push_cond['Similarity'] = sim_list
 
         # get info from worksheet before push overwrites

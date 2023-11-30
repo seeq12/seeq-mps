@@ -1,4 +1,8 @@
 # Changelog
+v0.3.8
+---
+Seeq spy.workbook.search bug fix
+
 v0.3.7
 ---
 Seeq add-on manager package updates
