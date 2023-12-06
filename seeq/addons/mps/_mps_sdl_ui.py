@@ -638,11 +638,15 @@ class MpsUI(ipw.VBox):
             count += 1
 
             for c in data_pull.columns:
-                if 'float64' != data_pull.dtypes[c]:
-                    try:
-                        signal_list.remove(c)
-                    except:
-                        pass
+                # Check if the column is not already float64
+                if data_pull.dtypes[c] != 'float64':
+                    # Use to_numeric for conversion, set errors='coerce' to handle exceptions
+                    data_pull[c] = pd.to_numeric(data_pull[c], errors='coerce')
+                    
+                    # If after conversion column is still not float64, remove from signal_list if it exists
+                    if data_pull.dtypes[c] != 'float64':
+                        if c in signal_list:
+                            signal_list.remove(c)
         except:
             pass
 
