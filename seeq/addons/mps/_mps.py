@@ -928,7 +928,8 @@ def push_mps_results_batch(batch_sim_df, workbook_id, condition_name, Sheet_inde
 
     push_result_2["Value Unit Of Measure"] = "%"
     push_result_2["Maximum Interpolation"] = "1 sec"
-    spy.push(metadata=push_result_2, quiet=True)
+    spy.push(metadata=push_result_2, workbook=workbook_id,
+                             worksheet=worksheet_name, quiet=True)
 
     end = True
 
@@ -1061,7 +1062,8 @@ def push_mps_results(
 
         push_result_2["Value Unit Of Measure"] = "%"
         push_result_2["Maximum Interpolation"] = "1 sec"
-        spy.push(metadata=push_result_2, quiet=True)
+        spy.push(metadata=push_result_2, workbook=workbook_id,
+                               worksheet=worksheet_name, quiet=True)
 
         # push worksheet back in after overwrite
         new_display_items = pd.concat([current_display_items, push_result, push_result_2], axis=0, sort=True)
