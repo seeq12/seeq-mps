@@ -14,5 +14,5 @@ twine~=3.4.1
 wheel~=0.38.1
 packaging~=21.0
 pytz~=2021.3
-setuptools>=65.5.1
+setuptools>=70.0.0
 dohq-artifactory==0.8.1
