@@ -1,68 +1,95 @@
 {
-    "identifier": "com.seeq.addon.mps",
-    "name": "Multivariate Pattern Search",
-    "description": "Finds and measures similar events defined across multiple variables",
-    "version": "Input version here",
-    "maintainer":"Seeq Corporation https://seeq.com/",
-    "license": "Apache-2.0 license",
-    "icon": "fa fa-leaf",
-    "tags": {"documentation":"Documentation website here https://seeq12.github.io/seeq-mps/introduction.html" },
-    "previews": [
-      "additional_content/mpsworkflowexample.png"
-    ],
-    "elements": [
-      {
-        "name": "Multivariate Pattern Search",
-        "description": "Finds and measures similar events defined across multiple variables",
-        "identifier": "com.seeq.addon.mps.mps",
-        "known_aliases": ["MPS", "Multivariate Pattern Search"],
-        "type": "AddOnTool",
-        "path": "data-lab-functions",
-        "notebook_file_path": "multivariate_pattern_search_ui.ipynb",
-        "extensions": ["ipyvuetify", "widgetsnbextension","ipyvue"],
-        "configuration_schema": {
-          "type": "object",
-          "properties": {
-            "display": {
-              "type": "object",
-              "properties": {
-                "icon": {
-                  "type": "string",
-                  "default": "fa fa-leaf"
-                },
-                "linkType": {
-                  "enum": ["window", "tab", "none"],
-                  "default": "window"
-                },
-                "sortKey": {
-                  "type": "string",
-                  "default": "m"
-                },
-                "windowDetails": {
-                  "type": "string",
-                  "default": "toolbar=0,location=0,scrollbars=1,statusbar=0,menubar=0,resizable=1,height=900,width=600"
-                },
-                "reuseWindow": {
-                  "type": "boolean",
-                  "default": true
-                },
-                "includeWorkbookParameters": {
-                  "type": "boolean",
-                  "default": true
-                }
+  "identifier": "com.seeq.addon.mps",
+  "name": "Multivariate Pattern Search",
+  "description": "Finds and measures similar events defined across multiple variables",
+  "version": "Input version here",
+  "maintainer": "Seeq Corporation https://seeq.com/",
+  "license": "Apache-2.0 license",
+  "icon": "fa fa-leaf",
+  "tags": {
+    "documentation": "Documentation website here https://seeq12.github.io/seeq-mps/introduction.html"
+  },
+  "previews": [
+    "additional_content/mpsworkflowexample.png"
+  ],
+  "elements": [
+    {
+      "name": "Multivariate Pattern Search",
+      "description": "Finds and measures similar events defined across multiple variables",
+      "identifier": "com.seeq.addon.mps.mps",
+      "known_aliases": [
+        "MPS",
+        "Multivariate Pattern Search"
+      ],
+      "type": "AddOnTool",
+      "path": "data-lab-functions",
+      "notebook_file_path": "multivariate_pattern_search_ui.ipynb",
+      "extensions": [
+        "ipyvuetify",
+        "widgetsnbextension",
+        "ipyvue"
+      ],
+      "configuration_schema": {
+        "type": "object",
+        "properties": {
+          "display": {
+            "type": "object",
+            "properties": {
+              "icon": {
+                "type": "string",
+                "default": "fa fa-leaf"
               },
-              "required": [
-                "icon",
-                "linkType",
-                "sortKey",
-                "windowDetails",
-                "reuseWindow",
-                "includeWorkbookParameters"
-              ]
-            }
+              "linkType": {
+                "enum": [
+                  "window",
+                  "tab",
+                  "none"
+                ],
+                "default": "window"
+              },
+              "sortKey": {
+                "type": "string",
+                "default": "m"
+              },
+              "windowDetails": {
+                "type": "string",
+                "default": "toolbar=0,location=0,scrollbars=1,statusbar=0,menubar=0,resizable=1,height=900,width=600"
+              },
+              "reuseWindow": {
+                "type": "boolean",
+                "default": true
+              },
+              "includeWorkbookParameters": {
+                "type": "boolean",
+                "default": true
+              }
+            },
+            "required": [
+              "icon",
+              "linkType",
+              "sortKey",
+              "windowDetails",
+              "reuseWindow",
+              "includeWorkbookParameters"
+            ]
           },
-          "required": ["display"]
-        }
+          "advanced_project_configuration": {
+            "type": "object",
+            "properties": {
+              "kernel_name": {
+                "type": "string",
+                "default": "python311"
+              }
+            },
+            "required": [
+              "kernel_name"
+            ]
+          }
+        },
+        "required": [
+          "display"
+        ]
       }
-    ]
+    }
+  ]
 }
