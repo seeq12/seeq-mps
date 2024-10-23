@@ -12,7 +12,5 @@ scipy>=1.5.4
 tzlocal==2.1
 twine~=3.4.1
 wheel~=0.38.1
-packaging~=21.0
 pytz~=2021.3
 setuptools>=70.0.0
-dohq-artifactory==0.8.1

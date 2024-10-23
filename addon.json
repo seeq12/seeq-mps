@@ -59,6 +59,18 @@
                 "reuseWindow",
                 "includeWorkbookParameters"
               ]
+            },
+            "advanced_project_configuration": {
+              "type": "object",
+              "properties": {
+                "kernel_name": {
+                  "type": "string",
+                  "default": "python311"
+                }
+              },
+              "required": [
+                "kernel_name"
+              ]
             }
           },
           "required": ["display"]
