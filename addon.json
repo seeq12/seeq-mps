@@ -65,7 +65,7 @@
             "properties": {
               "kernel_name": {
                 "type": "string",
-                "default": "python311"
+                "default": "python38"
               }
             },
             "required": [
