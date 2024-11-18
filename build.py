@@ -7,7 +7,6 @@ import shutil
 import argparse
 import subprocess
 from pathlib import Path
-from artifactory import ArtifactoryPath
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -106,21 +105,3 @@ if args.addon:
         addon_manager_artifacts.append(addon_meta)
 
     print('Successfully created.')
-
-if args.distribute:
-
-    if addon_manager_artifacts:
-        print(f'Distributing addon manager artifacts to seeq.jfrog.io')
-        api_key = os.getenv('JFROG_API_KEY')
-        for artifact in addon_manager_artifacts:
-            _, file = os.path.split(artifact)
-            path = ArtifactoryPath(f"https://seeq.jfrog.io/artifactory/seeq-add-ons-prod-local/MPS/{file}",
-                                   apikey=api_key)
-            try:
-                path.deploy_file(artifact)
-                properties = path.properties
-                # Add identifier property
-                properties["identifier"] = "com.seeq.addon.mps"
-                path.properties = properties
-            except Exception as e:
-                print(e)
