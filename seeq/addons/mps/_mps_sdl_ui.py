@@ -426,6 +426,8 @@ class MpsUI(ipw.VBox):
             items_c = items[items.Type == 'Condition']
             items_c = items_c[items_c.Name == known_cap]
             self.data_pull_known = spy.pull(items_c, start=time_frame[0], end=time_frame[1], quiet=True, grid=griding)
+            self.data_pull_known.loc[self.data_pull_known['Capsule End'].isnull(), 'Capsule End'] = time_frame[1]
+            self.data_pull_known.loc[self.data_pull_known['Capsule Start'].isnull(), 'Capsule Start'] = time_frame[0]
 
         time_frame = [datetime.strptime(
             str(self.time_frame1.value)[:10] + " " + self.start_hour.value + ":" + self.start_min.value,
@@ -485,6 +487,8 @@ class MpsUI(ipw.VBox):
             items_c = items[items.Type == 'Condition']
             items_c = items_c[items_c.Name == batch_cond]
             batch_cond = spy.pull(items_c, start=time_frame[0], end=time_frame[1], quiet=True, grid=griding)
+            batch_cond.loc[batch_cond['Capsule End'].isnull(), 'Capsule End'] = time_frame[1]
+            batch_cond.loc[batch_cond['Capsule Start'].isnull(), 'Capsule Start'] = time_frame[0]
             time_distort = 0.04
 
             Batch_sim_df = mps.seeq_mps_dtw_batch(batch_cond, data_pull, data_pull_c, self.data_pull_known,
