@@ -32,7 +32,7 @@ distribution_relative_dir = 'dist'
 distribution_abs_dir = os.path.join(os.getcwd(), distribution_relative_dir)
 if os.path.isdir(distribution_abs_dir):
     shutil.rmtree(distribution_abs_dir)
-build_command = ['python', 'setup.py', 'bdist_wheel',
+build_command = ['python3', 'setup.py', 'bdist_wheel',
                  '-d', distribution_relative_dir,
                  f'--python-tag=py{sys.version_info.major}{sys.version_info.minor}']
 subprocess.run(build_command, cwd=os.getcwd())
