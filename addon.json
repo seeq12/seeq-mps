@@ -73,7 +73,7 @@
               ]
             }
           },
-          "required": ["display"]
+          "required": ["display", "advanced_project_configuration"]
         }
       }
     ]
