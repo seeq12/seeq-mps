@@ -3,7 +3,7 @@ IPython>=7.21.0
 ipywidgets>=7.6.3
 mass_ts>=0.1.4
 numpy>=1.22.2
-pandas>=1.4.1, <2.0.0
+pandas>=2.0.0
 parver~=0.3.1
 pytest==4.3.1
 sphinx==4.2.0
@@ -14,4 +14,3 @@ twine~=3.4.1
 wheel~=0.38.1
 pytz~=2021.3
 setuptools>=70.0.0
-dohq-artifactory==0.8.1
