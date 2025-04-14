@@ -19,7 +19,7 @@
         "type": "AddOnTool",
         "path": "data-lab-functions",
         "notebook_file_path": "multivariate_pattern_search_ui.ipynb",
-        "extensions": ["ipyvuetify", "widgetsnbextension","ipyvue"],
+        "extensions": [],
         "configuration_schema": {
           "type": "object",
           "properties": {
