@@ -529,7 +529,7 @@ def seeq_mps_mass(data_pull, data_pull_c, data_pull_known, threshold, normalise,
         return found_all_sorted
     else:
         found_all_sorted.loc[:, 5:] = found_all_sorted.loc[:, 5:].div(found_all_sorted["sum"], axis=0) * 100
-        found_all_sorted = found_all_sorted.drop("sum", 1)
+        found_all_sorted = found_all_sorted.drop("sum", axis=1)
         found_all_sorted = found_all_sorted.to_numpy()
 
         return found_all_sorted
@@ -705,7 +705,7 @@ def seeq_mps_dtw(data_pull, data_pull_c, data_pull_known, threshold, normalise, 
     else:
 
         found_all_sorted.loc[:, 5:] = found_all_sorted.loc[:, 5:].div(found_all_sorted["sum"], axis=0) * 100
-        found_all_sorted = found_all_sorted.drop("sum", 1)
+        found_all_sorted = found_all_sorted.drop("sum", axis=1)
         found_all_sorted = found_all_sorted.drop_duplicates(subset=[1])
         found_all_sorted = found_all_sorted.to_numpy()
 
@@ -833,7 +833,7 @@ def seeq_mps_dtw_batch(batch_cond, data_pull, data_pull_c, data_pull_known, norm
             batch_cond['Capsule End'] - batch_cond['Capsule Start']) / 2
 
     batch_sim_df.index = pd.to_datetime(batch_sim_df['Date-Time'])
-    batch_sim_df = batch_sim_df.drop('Date-Time', 1)
+    batch_sim_df = batch_sim_df.drop('Date-Time', axis=1)
 
     meta_data.columns = "% Contribution to Dissimilarity from " + meta_data.columns
 
@@ -845,7 +845,7 @@ def seeq_mps_dtw_batch(batch_cond, data_pull, data_pull_c, data_pull_known, norm
             else:
                 meta_data[c][i] = meta_data[c][i] / meta_data['sum'][i] * 100
     # meta_data= meta_data.div(meta_data["sum"], axis=0)*100
-    meta_data = meta_data.drop("sum", 1)
+    meta_data = meta_data.drop("sum", axis=1)
     meta_data.index = batch_sim_df.index
     batch_sim_df = pd.concat([batch_sim_df, meta_data], axis=1)
 
@@ -1031,7 +1031,7 @@ def push_mps_results(
                                )
 
         # create dataframe to push similarity signal
-        push_sig = pd.DataFrame(min_idx_multivar).drop([1, 2, 3, 4], 1)
+        push_sig = pd.DataFrame(min_idx_multivar).drop([1, 2, 3, 4], axis=1)
         push_sig = push_sig.iloc[:Return_top_x]
 
         temp_c_list = data_pull.columns[:-1]
@@ -1048,7 +1048,7 @@ def push_mps_results(
                     timedelta(seconds=(known_length_list[i]) / 2) * grid_)
 
         push_sig.index = pd.to_datetime(push_sig.temp)
-        push_sig = push_sig.drop('temp', 1)
+        push_sig = push_sig.drop('temp', axis=1)
 
         # change to dissimilarity
         push_sig[name_] = 100 - push_sig[name_]
