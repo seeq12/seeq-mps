@@ -38,7 +38,7 @@ def test_batch_calc():
     Batch_sim_df = Batch_sim_df.apply(pd.to_numeric)
     Batch_sim_df = Batch_sim_df.round(decimals=2)
     Batch_sim_df_test = pd.read_csv('test_objects/batch_results.csv', index_col=0)
-    Batch_sim_df_test.index = pd.to_datetime(Batch_sim_df_test.index)
+    Batch_sim_df_test.index = pd.to_datetime(Batch_sim_df_test.index, format='ISO8601')
     Batch_sim_df_test = Batch_sim_df_test.round(decimals=2)
 
     # Batch_sim_df_test.columns = ['Similarity']
