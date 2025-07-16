@@ -2,6 +2,8 @@
 import re
 from parver import Version, ParseError
 import setuptools
+import pathlib
+import tomllib
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -21,6 +23,12 @@ with open("seeq/addons/mps/_version.py", "r+") as f:
         print(str(e))
         raise
 
+def read_toml_requirements():
+    toml_path = pathlib.Path(__file__).with_name("pyproject.toml")
+    with toml_path.open("rb") as f:
+        data = tomllib.load(f)
+    return data["project"]["dependencies"]
+
 setup_args = dict(
     name='seeq-mps',
     version=version_scope['__version__'],
@@ -35,15 +43,7 @@ setup_args = dict(
     packages=setuptools.find_namespace_packages(include=['seeq.*']),
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-        'dtaidistance>=1.2.3',
-        'IPython>=7.21.0',
-        'ipywidgets>=7.6.3',
-        'mass_ts>=0.1.4',
-        'numpy>=1.22.2',
-        'pandas>=2.0.0',
-        'scipy>=1.5.4',
-    ],
+    install_requires=read_toml_requirements(),
     classifiers=[
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: Apache Software License",
