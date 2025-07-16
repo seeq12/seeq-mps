@@ -31,39 +31,61 @@ distribution_relative_dir = 'dist'
 distribution_abs_dir = os.path.join(os.getcwd(), distribution_relative_dir)
 if os.path.isdir(distribution_abs_dir):
     shutil.rmtree(distribution_abs_dir)
-build_command = ['python', 'setup.py', 'bdist_wheel',
-                 '-d', distribution_relative_dir,
-                 f'--python-tag=py{sys.version_info.major}{sys.version_info.minor}']
-subprocess.run(build_command, cwd=os.getcwd())
-source_wheel = max(
-    [os.path.join(distribution_abs_dir, f) for f in os.listdir(distribution_abs_dir)],
-    key=os.path.getctime
-)
 
-source_wheel_name = os.path.split(source_wheel)[-1]
+# Ensure 'build' package is installed
+try:
+    import build
+except ImportError:
+    print("Installing build module...")
+    subprocess.run([sys.executable, "-m", "pip", "install", "build"])
+
+# Build the wheel
+builder = build.ProjectBuilder('.')
+import tempfile
+
+builder = build.ProjectBuilder('.')
+with tempfile.TemporaryDirectory() as temp_dir:
+    wheel_path = builder.build('wheel', temp_dir)
+    shutil.move(wheel_path, os.path.join(distribution_abs_dir, os.path.basename(wheel_path)))
+
+# Get the newest wheel file
+wheel_files = list(Path(distribution_abs_dir).glob("*.whl"))
+if not wheel_files:
+    raise FileNotFoundError("No wheel file found in dist/")
+source_wheel = max(wheel_files, key=os.path.getctime)
+source_wheel_name = source_wheel.name
 version = source_wheel_name.split('-')[1]
 
 compiled_wheel = None
 if args.compile:
-    print('Creating pyc file')
-    pyc_relative_dir = os.path.join(distribution_relative_dir, 'bin')
-    pyc_abs_dir = os.path.join(distribution_abs_dir, 'bin')
-    build_command = [sys.executable, 'setup.py', 'bdist_egg',
-                     '-d', pyc_relative_dir,
-                     '--exclude-source-files',
-                     '-m', '+c']
-    build_result = subprocess.run(build_command, cwd=os.getcwd(), capture_output=True, text=True)
-    wheel_command = ['wheel', 'convert', os.path.join(pyc_relative_dir, '*.egg'), '-d', pyc_relative_dir]
-    wheel_result = subprocess.run(wheel_command, cwd=os.getcwd(), capture_output=True, text=True)
+    import compileall
+    print('Compiling .py files to .pyc...')
+    compiled_dir = os.path.join(distribution_abs_dir, 'compiled')
+    os.makedirs(compiled_dir, exist_ok=True)
 
-    # move the pyc wheel file to the dist dir
-    path = Path('.')
-    wheel_file = list(path.glob('**/bin/*.whl'))[0]
-    wheel_file.rename(Path(wheel_file.parent.parent, wheel_file.name))
-    compiled_wheel = os.path.join(wheel_file.parent.parent, wheel_file.name)
+    # Compile all source files into .pyc under `compiled_dir`
+    compileall.compile_dir(
+        dir=os.getcwd(),
+        force=True,
+        quiet=1,
+        legacy=True,
+        ddir=os.getcwd(),
+        optimize=2,
+        rx=None
+    )
 
-    # remove the bin dir
-    shutil.rmtree(pyc_abs_dir)
+    # Copy only .pyc files from __pycache__ into the compiled dir
+    for root, dirs, files in os.walk(os.getcwd()):
+        for file in files:
+            if file.endswith('.pyc'):
+                full_path = os.path.join(root, file)
+                rel_path = os.path.relpath(full_path, os.getcwd())
+                dest_path = os.path.join(compiled_dir, rel_path)
+                os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+                shutil.copy2(full_path, dest_path)
+
+    compiled_wheel = compiled_dir
+    print(f'Compiled .pyc files placed in: {compiled_wheel}')
 
 addon_manager_artifacts = []
 if args.addon:

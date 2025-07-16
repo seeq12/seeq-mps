@@ -2,15 +2,14 @@
 name = "seeq-mps"
 version = "0.4.1"
 description = "Finds and measures similar events defined across multiple variables"
-authors = [{ name = "Seeq Corporation" }]
+authors = [{ name = "Seeq Corporation", email = "applied.research@seeq.com" }]
 readme = "README.md"
-license = { text = 'Apache License 2.0' }
+license = "Apache-2.0"
+requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Python :: 3.7",
-    "License :: OSI Approved :: Apache Software License",
-    "Operating System :: OS Independent",
+    "Operating System :: OS Independent"
 ]
-requires-python = ">=3.7"
 dependencies = [
     "dtaidistance>=1.2.3",
     "IPython>=7.21.0",
@@ -33,6 +32,14 @@ dev = [
     "pytz~=2021.3",
     "setuptools>=70.0.0"
 ]
+
+[tool.setuptools.packages.find]
+include = ["seeq.*"]
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+platforms = ["Linux", "Windows"]
 
 [build-system]
 requires = ["setuptools>=61.0"]
