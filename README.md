@@ -42,7 +42,7 @@ The backend of **seeq-mps** requires **Python 3.7** or later.
 
 ## Dependencies
 
-See [`requirements.txt`](https://github.com/seeq12/seeq-mps/tree/master/requirements.txt) file for a list of
+See [`pyproject.toml`](https://github.com/seeq12/seeq-mps/tree/master/pyproject.toml) file for a list of
 dependencies and versions. Additionally, you will need to install the `seeq` module with the appropriate version that
 matches your Seeq server. For more information on the `seeq` module see [seeq at pypi](https://pypi.org/project/seeq/)
 
@@ -103,8 +103,7 @@ look [here](https://docs.python.org/3.8/tutorial/venv.html)
 Once your virtual environment is activated, you can install requirements and **seeq-mps** from source with:
 
 ```shell
-pip install -r requirements.txt
-python setup.py install
+python addon.py -a
 ```
 
 ### Troubleshooting
