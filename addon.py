@@ -31,10 +31,11 @@ distribution_relative_dir = 'dist'
 distribution_abs_dir = os.path.join(os.getcwd(), distribution_relative_dir)
 if os.path.isdir(distribution_abs_dir):
     shutil.rmtree(distribution_abs_dir)
-build_command = ['python', 'setup.py', 'bdist_wheel',
-                 '-d', distribution_relative_dir,
-                 f'--python-tag=py{sys.version_info.major}{sys.version_info.minor}']
-subprocess.run(build_command, cwd=os.getcwd())
+build_command = [
+    sys.executable, '-m', 'build',
+    '--wheel',
+    '--outdir', distribution_relative_dir]
+subprocess.run(build_command, check=True)
 source_wheel = max(
     [os.path.join(distribution_abs_dir, f) for f in os.listdir(distribution_abs_dir)],
     key=os.path.getctime
@@ -42,28 +43,6 @@ source_wheel = max(
 
 source_wheel_name = os.path.split(source_wheel)[-1]
 version = source_wheel_name.split('-')[1]
-
-compiled_wheel = None
-if args.compile:
-    print('Creating pyc file')
-    pyc_relative_dir = os.path.join(distribution_relative_dir, 'bin')
-    pyc_abs_dir = os.path.join(distribution_abs_dir, 'bin')
-    build_command = [sys.executable, 'setup.py', 'bdist_egg',
-                     '-d', pyc_relative_dir,
-                     '--exclude-source-files',
-                     '-m', '+c']
-    build_result = subprocess.run(build_command, cwd=os.getcwd(), capture_output=True, text=True)
-    wheel_command = ['wheel', 'convert', os.path.join(pyc_relative_dir, '*.egg'), '-d', pyc_relative_dir]
-    wheel_result = subprocess.run(wheel_command, cwd=os.getcwd(), capture_output=True, text=True)
-
-    # move the pyc wheel file to the dist dir
-    path = Path('.')
-    wheel_file = list(path.glob('**/bin/*.whl'))[0]
-    wheel_file.rename(Path(wheel_file.parent.parent, wheel_file.name))
-    compiled_wheel = os.path.join(wheel_file.parent.parent, wheel_file.name)
-
-    # remove the bin dir
-    shutil.rmtree(pyc_abs_dir)
 
 addon_manager_artifacts = []
 if args.addon:
