@@ -1,6 +1,7 @@
 /venv
 /.idea
 /venv2
+/bin
 /dist
 /build
 /seeq_mps.egg-info
