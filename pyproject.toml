@@ -2,40 +2,39 @@
 name = "seeq-mps"
 version = "0.4.1"
 description = "Finds and measures similar events defined across multiple variables"
-authors = [{ name = "Seeq Corporation", email = "applied.research@seeq.com" }]
+authors = [
+    { name = "Seeq Corporation" },
+]
 readme = "README.md"
 license = "Apache-2.0"
-requires-python = ">=3.7"
+requires-python = ">=3.11"
 classifiers = [
-    "Programming Language :: Python :: 3.7",
-    "Operating System :: OS Independent"
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
 ]
 dependencies = [
-    "dtaidistance>=1.2.3",
-    "IPython>=7.21.0",
-    "ipywidgets>=7.6.3",
-    "mass_ts>=0.1.4",
-    "numpy>=1.22.2",
-    "pandas>=2.0.0",
-    "scipy>=1.5.4"
+    "dtaidistance==2.3.13",
+    "IPython==9.4.0",
+    "ipywidgets==8.1.7",
+    "mass_ts==0.1.4",
+    "numpy==2.3.2",
+    "pandas==2.3.1",
+    "scipy==1.16.1",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "parver~=0.3.1",
-    "pytest==4.3.1",
-    "sphinx==4.2.0",
-    "sphinx-rtd-theme==1.0.0",
-    "tzlocal==2.1",
-    "twine~=3.4.1",
-    "wheel~=0.38.1",
-    "pytz~=2021.3",
-    "setuptools>=80.9.0",
-    "build==1.2.2"
+    "parver==0.5",
+    "pytest==8.4.1",
+    "sphinx==8.2.3",
+    "sphinx-rtd-theme==3.0.2",
+    "tzlocal==5.3.1",
+    "twine==6.1.0",
+    "wheel==0.45.1",
+    "pytz==2025.2",
+    "setuptools==80.9.0",
+    "build==1.2.2.post1",
 ]
-
-[tool.setuptools.packages.find]
-include = ["seeq.*"]
 
 [project.urls]
 Homepage = "https://github.com/seeq12/seeq-mps"
@@ -44,8 +43,18 @@ Source = "https://github.com/seeq12/seeq-mps"
 [tool.setuptools]
 zip-safe = false
 include-package-data = true
-platforms = ["Linux", "Windows"]
+platforms = [
+    "Linux",
+    "Windows",
+]
+
+[tool.setuptools.packages.find]
+include = [
+    "seeq.*",
+]
 
 [build-system]
-requires = ["setuptools>=80.9.0", "parver"]
+requires = [
+    "setuptools>=80.9.0",
+]
 build-backend = "setuptools.build_meta"
