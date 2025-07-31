@@ -38,7 +38,7 @@ https://user-images.githubusercontent.com/5995501/156315178-a55b7a52-4ea5-46cb-8
 
 # Installation
 
-The backend of **seeq-mps** requires **Python 3.7** or later.
+The backend of **seeq-mps** requires **Python 3.11** or later.
 
 ## Dependencies
 
@@ -96,14 +96,26 @@ git clone git@github.com:seeq12/seeq-mps.git
 
 ## Installation from source
 
-For development work, it is highly recommended creating a python virtual environment and install the package in that
+For development work, it is highly recommended creating a python virtual environment and installing the package in that
 working environment. If you are not familiar with python virtual environments, you can take a
-look [here](https://docs.python.org/3.8/tutorial/venv.html)
+look [here](https://docs.python.org/3.8/tutorial/venv.html).
 
-Once your virtual environment is activated, you can install requirements and **seeq-mps** from source with:
+Once your virtual environment is activated, you must install the project dependencies. For example, if using a `uv`
+virtual environment, you can install the dependencies with:
+```shell    
+uv pip install ".[dev]"
+```
+
+After installing the dependencies, you can build the `.whl`, `.addon`, and `.addonmeta` for **seeq-mps** from source with:
 
 ```shell
-python addon.py -a
+python addon.py
+```
+
+**Note:** If you do not have `build` installed, installing **seeq-mps** will fail. You may need to install it in
+your environment using:
+```shell
+pip install build
 ```
 
 ### Troubleshooting

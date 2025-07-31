@@ -1,10 +1,8 @@
 [project]
 name = "seeq-mps"
-version = "0.4.1"
+version = "0.5.0"
 description = "Finds and measures similar events defined across multiple variables"
-authors = [
-    { name = "Seeq Corporation" },
-]
+authors = [{ name = "Seeq Corporation" }]
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.11"
