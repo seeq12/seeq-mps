@@ -106,13 +106,17 @@ virtual environment, you can install the dependencies with:
 uv pip install ".[dev]"
 ```
 
-After installing the dependencies, you can build the `.whl`, `.addon`, and `.addonmeta` for **seeq-mps** from source with:
+After installing the dependencies, you can build the `.whl` for **seeq-mps** using:
+```shell
+python -m build
+```
 
+You can build the `.addon`, and `.addonmeta` for **seeq-mps** from source with:
 ```shell
 python addon.py
 ```
 
-**Note:** If you do not have `build` installed, installing **seeq-mps** will fail. You may need to install it in
+**Note:** If you do not have `build` installed, building **seeq-mps** will fail. You may need to install it in
 your environment using:
 ```shell
 pip install build
