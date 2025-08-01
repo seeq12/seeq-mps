@@ -63,4 +63,5 @@ with zipfile.ZipFile(addon_meta, 'w') as z:
         z.write(file)
     addon_manager_artifacts.append(addon_meta)
 
+print(addon_manager_artifacts)
 print('Successfully created.')
