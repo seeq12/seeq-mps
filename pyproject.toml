@@ -1,6 +1,6 @@
 [project]
 name = "seeq-mps"
-version = "0.5.0"
+version = "0.4.2"
 description = "Finds and measures similar events defined across multiple variables"
 authors = [{ name = "Seeq Corporation" }]
 readme = "README.md"
