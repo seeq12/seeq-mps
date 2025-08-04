@@ -122,6 +122,9 @@ your environment using:
 pip install build
 ```
 
+**Updating lock file:** When dependencies in the `pyproject.toml` file are modified, run `uv lock` to update the
+`uv.lock` file.
+
 ### Troubleshooting
 
 If you experience the following error:
