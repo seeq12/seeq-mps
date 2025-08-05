@@ -1,6 +1,6 @@
 [project]
 name = "seeq-mps"
-version = "0.4.2"
+dynamic = ["version"]
 description = "Finds and measures similar events defined across multiple variables"
 authors = [{ name = "Seeq Corporation" }]
 readme = "README.md"
@@ -45,6 +45,9 @@ platforms = [
     "Linux",
     "Windows",
 ]
+
+[tool.setuptools.dynamic]
+version = {attr = "seeq.addons.mps._version.__version__"}
 
 [tool.setuptools.packages.find]
 include = [
