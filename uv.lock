@@ -1020,11 +1020,9 @@ wheels = [
 
 [[package]]
 name = "seeq-mps"
-version = "0.5.0"
 source = { editable = "." }
 dependencies = [
     { name = "dtaidistance" },
-    { name = "ipython" },
     { name = "ipywidgets" },
     { name = "mass-ts" },
     { name = "numpy" },
@@ -1050,7 +1048,6 @@ dev = [
 requires-dist = [
     { name = "build", marker = "extra == 'dev'", specifier = "==1.2.2.post1" },
     { name = "dtaidistance", specifier = "==2.3.13" },
-    { name = "ipython", specifier = "==9.4.0" },
     { name = "ipywidgets", specifier = "==8.1.7" },
     { name = "mass-ts", specifier = "==0.1.4" },
     { name = "numpy", specifier = "==2.3.2" },
