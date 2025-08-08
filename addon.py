@@ -27,7 +27,7 @@ version = source_wheel_name.split('-')[1]
 
 addon_manager_artifacts = []
 name = 'mps'
-print(f'Creating {name}.addon')
+print(f'Creating {name}-{version}.addon')
 # Ensure output folder exists
 bin = os.path.join(os.getcwd(), 'bin')
 if not os.path.exists(bin):
@@ -37,8 +37,8 @@ with open('addon.json') as json_file:
     parsed_json = json.load(json_file)
 parsed_json['version'] = version
 
-addon = os.path.join(bin, f'{name}.addon')
-addon_meta = os.path.join(bin, f'{name}.addonmeta')
+addon = os.path.join(bin, f'{name}-{version}.addon')
+addon_meta = os.path.join(bin, f'{name}-{version}.addonmeta')
 
 # Build addon
 with zipfile.ZipFile(addon, 'w') as z:
@@ -54,7 +54,7 @@ with zipfile.ZipFile(addon, 'w') as z:
         z.write(file)
     addon_manager_artifacts.append(addon)
 # Build addonmeta
-print(f'Creating {name}.addonmeta')
+print(f'Creating {name}-{version}.addonmeta')
 with zipfile.ZipFile(addon_meta, 'w') as z:
     with z.open("addon.json", "w") as c:
         c.write(json.dumps(parsed_json, indent=2).encode("utf-8"))
