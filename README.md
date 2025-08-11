@@ -38,11 +38,11 @@ https://user-images.githubusercontent.com/5995501/156315178-a55b7a52-4ea5-46cb-8
 
 # Installation
 
-The backend of **seeq-mps** requires **Python 3.7** or later.
+The backend of **seeq-mps** requires **Python 3.11** or later.
 
 ## Dependencies
 
-See [`requirements.txt`](https://github.com/seeq12/seeq-mps/tree/master/requirements.txt) file for a list of
+See [`pyproject.toml`](https://github.com/seeq12/seeq-mps/tree/master/pyproject.toml) file for a list of
 dependencies and versions. Additionally, you will need to install the `seeq` module with the appropriate version that
 matches your Seeq server. For more information on the `seeq` module see [seeq at pypi](https://pypi.org/project/seeq/)
 
@@ -96,16 +96,34 @@ git clone git@github.com:seeq12/seeq-mps.git
 
 ## Installation from source
 
-For development work, it is highly recommended creating a python virtual environment and install the package in that
+For development work, it is highly recommended creating a python virtual environment and installing the package in that
 working environment. If you are not familiar with python virtual environments, you can take a
-look [here](https://docs.python.org/3.8/tutorial/venv.html)
+look [here](https://docs.python.org/3.8/tutorial/venv.html).
 
-Once your virtual environment is activated, you can install requirements and **seeq-mps** from source with:
-
-```shell
-pip install -r requirements.txt
-python setup.py install
+Once your virtual environment is activated, you must install the project dependencies. For example, if using a `uv`
+virtual environment, you can install the dependencies with:
+```shell    
+uv pip install ".[dev]"
 ```
+
+After installing the dependencies, you can build the `.whl` for **seeq-mps** using:
+```shell
+python -m build
+```
+
+You can build the `.addon`, and `.addonmeta` for **seeq-mps** from source with:
+```shell
+python addon.py
+```
+
+**Note:** If you do not have `build` installed, building **seeq-mps** will fail. You may need to install it in
+your environment using:
+```shell
+pip install build
+```
+
+**Updating lock file:** When dependencies in the `pyproject.toml` file are modified, run `uv lock` to update the
+`uv.lock` file.
 
 ### Troubleshooting
 
