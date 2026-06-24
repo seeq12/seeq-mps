@@ -1,18 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>seeq.addons.mps._mps &mdash; seeq-mps 0.3.5 documentation</title>
-      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>seeq.addons.mps._mps &mdash; seeq-mps 0.4.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=8209df7b" />
+
   
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/seeq-favicon.ico"/>
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=ff822928"></script>
+      <script src="../../../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -23,14 +26,16 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../../index.html" class="icon icon-home"> seeq-mps
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            seeq-mps
+              <img src="../../../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                0.3.5
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,9 +65,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>seeq.addons.mps._mps</li>
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">seeq.addons.mps._mps</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -72,19 +77,21 @@
            <div itemprop="articleBody">
              
   <h1>Source code for seeq.addons.mps._mps</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">seeq</span> <span class="kn">import</span> <span class="n">spy</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">seeq</span><span class="w"> </span><span class="kn">import</span> <span class="n">spy</span>
 
-<span class="kn">import</span> <span class="nn">mass_ts</span> <span class="k">as</span> <span class="nn">mts</span>
-<span class="kn">from</span> <span class="nn">dtaidistance</span> <span class="kn">import</span> <span class="n">dtw</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">mass_ts</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mts</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dtaidistance</span><span class="w"> </span><span class="kn">import</span> <span class="n">dtw</span>
 
 
-<div class="viewcode-block" id="gather_workbook_worksheet_meta_data"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.gather_workbook_worksheet_meta_data">[docs]</a><span class="k">def</span> <span class="nf">gather_workbook_worksheet_meta_data</span><span class="p">(</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">):</span>
+<div class="viewcode-block" id="gather_workbook_worksheet_meta_data">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.gather_workbook_worksheet_meta_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">gather_workbook_worksheet_meta_data</span><span class="p">(</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function gathers workbook object data and worksheet index</span>
 
@@ -123,7 +130,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR = Could not find worksheet: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">worksheet_id</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="save_ref"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.save_ref">[docs]</a><span class="k">def</span> <span class="nf">save_ref</span><span class="p">(</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">,</span> <span class="n">signal_pull_list</span><span class="p">,</span> <span class="n">known_cap</span><span class="p">,</span> <span class="n">time_frame</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">save_name</span><span class="p">,</span> <span class="n">mypath</span><span class="p">):</span>
+
+<div class="viewcode-block" id="save_ref">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.save_ref">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_ref</span><span class="p">(</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">,</span> <span class="n">signal_pull_list</span><span class="p">,</span> <span class="n">known_cap</span><span class="p">,</span> <span class="n">time_frame</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">save_name</span><span class="p">,</span> <span class="n">mypath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function saves the reference profile time series data and metadata as a pickle file</span>
 
@@ -166,7 +176,10 @@
         <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data_pull_known</span><span class="p">,</span> <span class="n">file_</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="load_ref"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.load_ref">[docs]</a><span class="k">def</span> <span class="nf">load_ref</span><span class="p">(</span><span class="n">load_name</span><span class="p">,</span> <span class="n">mypath</span><span class="p">):</span>
+
+<div class="viewcode-block" id="load_ref">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.load_ref">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_ref</span><span class="p">(</span><span class="n">load_name</span><span class="p">,</span> <span class="n">mypath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function loads the reference profile time series data and metadata from a previously saved pickle file.</span>
 
@@ -195,11 +208,13 @@
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_</span><span class="p">:</span>
         <span class="n">items_s_ref</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
         <span class="n">data_pull_known</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">items_s_ref</span><span class="p">,</span> <span class="n">data_pull_known</span></div>
 
 
-<div class="viewcode-block" id="pull_ref_data"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.pull_ref_data">[docs]</a><span class="k">def</span> <span class="nf">pull_ref_data</span><span class="p">(</span><span class="n">items_s_ref</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+
+<div class="viewcode-block" id="pull_ref_data">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.pull_ref_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pull_ref_data</span><span class="p">(</span><span class="n">items_s_ref</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function gathers the time series data of the reference. The reference conditions limits the timeframe of the</span>
 <span class="sd">    time series data to be gathered, a signal list instructs the variables to be gathered and the sampling rate or</span>
@@ -233,13 +248,17 @@
     <span class="n">end_all</span> <span class="o">=</span> <span class="n">data_pull_known</span><span class="p">[</span><span class="s1">&#39;Capsule End&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="n">data_pull_c</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">items_s_ref</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start_all</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end_all</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+    
     <span class="n">data_pull_c</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_pull_c</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
     <span class="n">data_pull_c</span> <span class="o">=</span> <span class="n">data_pull_c</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">data_pull_c</span></div>
 
 
-<div class="viewcode-block" id="pull_mps_data"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.pull_mps_data">[docs]</a><span class="k">def</span> <span class="nf">pull_mps_data</span><span class="p">(</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">,</span> <span class="n">signal_pull_list</span><span class="p">,</span> <span class="n">items_s_ref</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">time_frame</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+
+<div class="viewcode-block" id="pull_mps_data">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.pull_mps_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pull_mps_data</span><span class="p">(</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">worksheet_id</span><span class="p">,</span> <span class="n">signal_pull_list</span><span class="p">,</span> <span class="n">items_s_ref</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">time_frame</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function gathers all the time series data required for the analysis, for the reference and the search area.</span>
 
@@ -293,14 +312,16 @@
     <span class="n">data_pull</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">items_s</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">time_frame</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">time_frame</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
     <span class="n">data_pull</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_pull</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
     <span class="n">data_pull</span> <span class="o">=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-
     <span class="n">data_pull_c</span> <span class="o">=</span> <span class="n">pull_ref_data</span><span class="p">(</span><span class="n">items_s_ref</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">grid</span><span class="p">)</span>
 
     <span class="c1"># return signal data, known capsule start and send time, length of known window</span>
     <span class="k">return</span> <span class="n">data_pull</span><span class="p">,</span> <span class="n">data_pull_c</span><span class="p">,</span> <span class="n">sheet_index</span></div>
 
 
-<div class="viewcode-block" id="sort_and_prepare_results"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.sort_and_prepare_results">[docs]</a><span class="k">def</span> <span class="nf">sort_and_prepare_results</span><span class="p">(</span><span class="n">data_pull</span><span class="p">,</span> <span class="n">total_dist</span><span class="p">,</span> <span class="n">window_step</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">known</span><span class="p">,</span> <span class="n">sim_</span><span class="p">,</span> <span class="n">max_</span><span class="p">):</span>
+
+<div class="viewcode-block" id="sort_and_prepare_results">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.sort_and_prepare_results">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort_and_prepare_results</span><span class="p">(</span><span class="n">data_pull</span><span class="p">,</span> <span class="n">total_dist</span><span class="p">,</span> <span class="n">window_step</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">known</span><span class="p">,</span> <span class="n">sim_</span><span class="p">,</span> <span class="n">max_</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function takes the distance measurements from all variables at each window step, orders them numerically,</span>
 <span class="sd">    computes a % similarity score by comparing against the minimum possible distance (zero) and the maximum distance</span>
@@ -405,7 +426,10 @@
     <span class="k">return</span> <span class="n">found_list</span><span class="p">,</span> <span class="n">found_sim</span></div>
 
 
-<div class="viewcode-block" id="known_select"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.known_select">[docs]</a><span class="k">def</span> <span class="nf">known_select</span><span class="p">(</span><span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">select_</span><span class="p">):</span>
+
+<div class="viewcode-block" id="known_select">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.known_select">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">known_select</span><span class="p">(</span><span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">select_</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function uses the known start and end time of the reference capsule/s and extracts the time series data from</span>
 <span class="sd">    the entire time series data set within the investigation range of the worksheet.</span>
@@ -453,7 +477,10 @@
     <span class="k">return</span> <span class="n">known</span><span class="p">,</span> <span class="n">knownlength</span></div>
 
 
-<div class="viewcode-block" id="seeq_mps_mass"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.seeq_mps_mass">[docs]</a><span class="k">def</span> <span class="nf">seeq_mps_mass</span><span class="p">(</span><span class="n">data_pull</span><span class="p">,</span> <span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">normalise</span><span class="p">,</span> <span class="n">sim_</span><span class="p">):</span>
+
+<div class="viewcode-block" id="seeq_mps_mass">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.seeq_mps_mass">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">seeq_mps_mass</span><span class="p">(</span><span class="n">data_pull</span><span class="p">,</span> <span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">normalise</span><span class="p">,</span> <span class="n">sim_</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function measures the euclidean distance between the reference and search space time series data over the same</span>
 <span class="sd">    duration (limited by the reference) using Mueen&#39;s Algorithm for Similarity Search [MASS]. The algorithm window steps</span>
@@ -604,13 +631,16 @@
         <span class="k">return</span> <span class="n">found_all_sorted</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:]</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
-        <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">found_all_sorted</span></div>
 
 
-<div class="viewcode-block" id="seeq_mps_dtw"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.seeq_mps_dtw">[docs]</a><span class="k">def</span> <span class="nf">seeq_mps_dtw</span><span class="p">(</span><span class="n">data_pull</span><span class="p">,</span> <span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">normalise</span><span class="p">,</span> <span class="n">sim_</span><span class="p">,</span> <span class="n">time_distort</span><span class="p">):</span>
+
+<div class="viewcode-block" id="seeq_mps_dtw">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.seeq_mps_dtw">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">seeq_mps_dtw</span><span class="p">(</span><span class="n">data_pull</span><span class="p">,</span> <span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">normalise</span><span class="p">,</span> <span class="n">sim_</span><span class="p">,</span> <span class="n">time_distort</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function measures the distance between the reference and search space time series data over one or many window</span>
 <span class="sd">    size/durations. This is achieved by utilising the dynamic time warping algorithm, which searches for the smallest</span>
@@ -780,14 +810,17 @@
     <span class="k">else</span><span class="p">:</span>
 
         <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:]</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">found_all_sorted</span><span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
-        <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">found_all_sorted</span> <span class="o">=</span> <span class="n">found_all_sorted</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">found_all_sorted</span></div>
 
 
-<div class="viewcode-block" id="seeq_mps_dtw_batch"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.seeq_mps_dtw_batch">[docs]</a><span class="k">def</span> <span class="nf">seeq_mps_dtw_batch</span><span class="p">(</span><span class="n">batch_cond</span><span class="p">,</span> <span class="n">data_pull</span><span class="p">,</span> <span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">normalise</span><span class="p">,</span> <span class="n">time_distort</span><span class="p">):</span>
+
+<div class="viewcode-block" id="seeq_mps_dtw_batch">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.seeq_mps_dtw_batch">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">seeq_mps_dtw_batch</span><span class="p">(</span><span class="n">batch_cond</span><span class="p">,</span> <span class="n">data_pull</span><span class="p">,</span> <span class="n">data_pull_c</span><span class="p">,</span> <span class="n">data_pull_known</span><span class="p">,</span> <span class="n">normalise</span><span class="p">,</span> <span class="n">time_distort</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is similar to the &quot;seeq_mps_dtw&quot; function but instead of window stepping through the entire search</span>
 <span class="sd">    area it only measures the distance between two time series datasets for each capsule in the batch condition. This</span>
@@ -908,7 +941,7 @@
             <span class="n">batch_cond</span><span class="p">[</span><span class="s1">&#39;Capsule End&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">batch_cond</span><span class="p">[</span><span class="s1">&#39;Capsule Start&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
 
     <span class="n">batch_sim_df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">batch_sim_df</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">])</span>
-    <span class="n">batch_sim_df</span> <span class="o">=</span> <span class="n">batch_sim_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">batch_sim_df</span> <span class="o">=</span> <span class="n">batch_sim_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="n">meta_data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="s2">&quot;% Contribution to Dissimilarity from &quot;</span> <span class="o">+</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">columns</span>
 
@@ -920,14 +953,17 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">meta_data</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="c1"># meta_data= meta_data.div(meta_data[&quot;sum&quot;], axis=0)*100</span>
-    <span class="n">meta_data</span> <span class="o">=</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">meta_data</span> <span class="o">=</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">meta_data</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">batch_sim_df</span><span class="o">.</span><span class="n">index</span>
     <span class="n">batch_sim_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">batch_sim_df</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">batch_sim_df</span></div>
 
 
-<div class="viewcode-block" id="push_mps_results_batch"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.push_mps_results_batch">[docs]</a><span class="k">def</span> <span class="nf">push_mps_results_batch</span><span class="p">(</span><span class="n">batch_sim_df</span><span class="p">,</span> <span class="n">workbook_id</span><span class="p">,</span> <span class="n">condition_name</span><span class="p">,</span> <span class="n">Sheet_index</span><span class="p">):</span>
+
+<div class="viewcode-block" id="push_mps_results_batch">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.push_mps_results_batch">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">push_mps_results_batch</span><span class="p">(</span><span class="n">batch_sim_df</span><span class="p">,</span> <span class="n">workbook_id</span><span class="p">,</span> <span class="n">condition_name</span><span class="p">,</span> <span class="n">Sheet_index</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function pushes the % similarity score as a % dis-similarity time series signal to a new worksheet within the</span>
 <span class="sd">    desired workbook in the case mps is in batch mode. In addition each variable&#39;s % contribution to the dis-similarity</span>
@@ -1003,14 +1039,18 @@
 
     <span class="n">push_result_2</span><span class="p">[</span><span class="s2">&quot;Value Unit Of Measure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;%&quot;</span>
     <span class="n">push_result_2</span><span class="p">[</span><span class="s2">&quot;Maximum Interpolation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1 sec&quot;</span>
-    <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="n">push_result_2</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="n">push_result_2</span><span class="p">,</span> <span class="n">workbook</span><span class="o">=</span><span class="n">workbook_id</span><span class="p">,</span>
+                             <span class="n">worksheet</span><span class="o">=</span><span class="n">worksheet_name</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">end</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">return</span> <span class="n">end</span></div>
 
 
-<div class="viewcode-block" id="push_mps_results"><a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.push_mps_results">[docs]</a><span class="k">def</span> <span class="nf">push_mps_results</span><span class="p">(</span>
+
+<div class="viewcode-block" id="push_mps_results">
+<a class="viewcode-back" href="../../../../backend_calculations.html#seeq.addons.mps._mps.push_mps_results">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">push_mps_results</span><span class="p">(</span>
         <span class="n">Return_top_x</span><span class="p">,</span> <span class="n">min_idx_multivar</span><span class="p">,</span> <span class="n">data_pull</span><span class="p">,</span> <span class="n">workbook_id</span><span class="p">,</span> <span class="n">condition_name</span><span class="p">,</span> <span class="n">Sheet_index</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function pushes the % similarity score as a % dis-similarity time series signal to a new worksheet within the</span>
@@ -1074,7 +1114,7 @@
                 <span class="n">seconds</span><span class="o">=</span><span class="n">known_length_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">grid_</span><span class="p">)</span>
 
         <span class="n">push_cond</span> <span class="o">=</span> <span class="n">push_cond</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">push_cond</span><span class="p">[</span><span class="s1">&#39;Date-Time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">push_cond</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
         <span class="n">push_cond</span><span class="p">[</span><span class="s1">&#39;Similarity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sim_list</span>
 
         <span class="c1"># get info from worksheet before push overwrites</span>
@@ -1105,7 +1145,7 @@
                                <span class="p">)</span>
 
         <span class="c1"># create dataframe to push similarity signal</span>
-        <span class="n">push_sig</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">min_idx_multivar</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">push_sig</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">min_idx_multivar</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">push_sig</span> <span class="o">=</span> <span class="n">push_sig</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">Return_top_x</span><span class="p">]</span>
 
         <span class="n">temp_c_list</span> <span class="o">=</span> <span class="n">data_pull</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -1122,7 +1162,7 @@
                     <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="p">(</span><span class="n">known_length_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">grid_</span><span class="p">)</span>
 
         <span class="n">push_sig</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">push_sig</span><span class="o">.</span><span class="n">temp</span><span class="p">)</span>
-        <span class="n">push_sig</span> <span class="o">=</span> <span class="n">push_sig</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;temp&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">push_sig</span> <span class="o">=</span> <span class="n">push_sig</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;temp&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># change to dissimilarity</span>
         <span class="n">push_sig</span><span class="p">[</span><span class="n">name_</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">-</span> <span class="n">push_sig</span><span class="p">[</span><span class="n">name_</span><span class="p">]</span>
@@ -1136,7 +1176,8 @@
 
         <span class="n">push_result_2</span><span class="p">[</span><span class="s2">&quot;Value Unit Of Measure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;%&quot;</span>
         <span class="n">push_result_2</span><span class="p">[</span><span class="s2">&quot;Maximum Interpolation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1 sec&quot;</span>
-        <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="n">push_result_2</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="n">push_result_2</span><span class="p">,</span> <span class="n">workbook</span><span class="o">=</span><span class="n">workbook_id</span><span class="p">,</span>
+                               <span class="n">worksheet</span><span class="o">=</span><span class="n">worksheet_name</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># push worksheet back in after overwrite</span>
         <span class="n">new_display_items</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">current_display_items</span><span class="p">,</span> <span class="n">push_result</span><span class="p">,</span> <span class="n">push_result_2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1163,6 +1204,7 @@
         <span class="n">end</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">return</span> <span class="n">end</span></div>
+
 </pre></div>
 
            </div>
