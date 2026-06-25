@@ -20,6 +20,7 @@ from seeq.addons import mps
 project = 'seeq-mps'
 copyright = '2021, Seeq Corporation'
 author = 'James Higgie'
+html_title = 'seeq-mps'
 
 # The full version, including alpha/beta/rc tags
 version = mps.__version__
