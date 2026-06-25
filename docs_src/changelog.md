@@ -1,4 +1,8 @@
 # Changelog
+v0.4.2
+---
+Common vulnerabilities and exposures fixes
+
 v0.3.9
 ---
 Seeq spy.push bug fix
