@@ -1,4 +1,14 @@
 # Changelog
+v0.4.3
+---
+Time zone data updated to IANA TZDB 2026e (Alberta, Northwest Territories and Manitoba permanent time
+change effective November 1, 2026). Fixed local time zone handling of analysis time frames so DST rules
+are applied.
+
+v0.4.2
+---
+Common vulnerabilities and exposures fixes
+
 v0.3.9
 ---
 Seeq spy.push bug fix
