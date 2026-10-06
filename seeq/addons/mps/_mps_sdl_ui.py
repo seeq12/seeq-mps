@@ -396,12 +396,12 @@ class MpsUI(ipw.VBox):
             self.items_s_ref, self.data_pull_known = mps.load_ref(load_name, self.mypath)
         else:
 
-            time_frame = [datetime.strptime(
+            time_frame = [pytz.timezone(lz_).localize(datetime.strptime(
                 str(self.time_frame1.value)[:10] + " " + self.start_hour.value + ":" + self.start_min.value,
-                '%Y-%m-%d %H:%M').replace(tzinfo=pytz.timezone(lz_)),
-                          datetime.strptime(
+                '%Y-%m-%d %H:%M')),
+                          pytz.timezone(lz_).localize(datetime.strptime(
                               str(self.time_frame2.value)[:10] + " " + self.end_hour.value + ":" + self.end_min.value,
-                              '%Y-%m-%d %H:%M').replace(tzinfo=pytz.timezone(lz_))]
+                              '%Y-%m-%d %H:%M'))]
 
             time_frame = [time_frame[0].astimezone(pytz.timezone("UTC")),
                           time_frame[1].astimezone(pytz.timezone("UTC"))]
@@ -429,12 +429,12 @@ class MpsUI(ipw.VBox):
             self.data_pull_known.loc[self.data_pull_known['Capsule End'].isnull(), 'Capsule End'] = time_frame[1]
             self.data_pull_known.loc[self.data_pull_known['Capsule Start'].isnull(), 'Capsule Start'] = time_frame[0]
 
-        time_frame = [datetime.strptime(
+        time_frame = [pytz.timezone(lz_).localize(datetime.strptime(
             str(self.time_frame1.value)[:10] + " " + self.start_hour.value + ":" + self.start_min.value,
-            '%Y-%m-%d %H:%M').replace(tzinfo=pytz.timezone(lz_)),
-                      datetime.strptime(
+            '%Y-%m-%d %H:%M')),
+                      pytz.timezone(lz_).localize(datetime.strptime(
                           str(self.time_frame2.value)[:10] + " " + self.end_hour.value + ":" + self.end_min.value,
-                          '%Y-%m-%d %H:%M').replace(tzinfo=pytz.timezone(lz_))]
+                          '%Y-%m-%d %H:%M'))]
         time_frame = [time_frame[0].astimezone(pytz.timezone("UTC")), time_frame[1].astimezone(pytz.timezone("UTC"))]
 
         # normalise = normalise_.value
@@ -773,12 +773,12 @@ class MpsUI(ipw.VBox):
         stores = json.loads(me.workbench)
         lz_ = stores['state']['stores']['sqWorkbenchStore']['userTimeZone']
 
-        time_frame = [datetime.strptime(
+        time_frame = [pytz.timezone(lz_).localize(datetime.strptime(
             str(self.time_frame1.value)[:10] + " " + self.start_hour.value + ":" + self.start_min.value,
-            '%Y-%m-%d %H:%M').replace(tzinfo=pytz.timezone(lz_)),
-                      datetime.strptime(
+            '%Y-%m-%d %H:%M')),
+                      pytz.timezone(lz_).localize(datetime.strptime(
                           str(self.time_frame2.value)[:10] + " " + self.end_hour.value + ":" + self.end_min.value,
-                          '%Y-%m-%d %H:%M').replace(tzinfo=pytz.timezone(lz_))]
+                          '%Y-%m-%d %H:%M'))]
 
         time_frame = [time_frame[0].astimezone(pytz.timezone("UTC")), time_frame[1].astimezone(pytz.timezone("UTC"))]
         known_cap = str(self.known_cap_.value)
