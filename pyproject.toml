@@ -30,7 +30,6 @@ dev = [
     "tzlocal==5.4.4",
     "twine==6.1.0",
     "wheel==0.45.1",
-    "pytz==2026.5",
     "setuptools==80.9.0",
     "build==1.2.2.post1",
 ]
